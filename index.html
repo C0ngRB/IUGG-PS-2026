@@ -9,44 +9,68 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
+
 <header class="site-header">
-    <div class="brand">
-        <div class="brand-title">IUGG-PS2026</div>
-        <div class="brand-subtitle">2nd IUGG Symposium on Planetary Sciences</div>
+    <div class="header-inner">
+        <!-- 左侧会议名称 -->
+        <div class="brand">
+            <div class="brand-title">IUGG-PS2026</div>
+            <div class="brand-subtitle">2nd IUGG Symposium on Planetary Sciences</div>
+        </div>
+
+        <!-- 桌面端导航：锚点滚动 -->
+        <nav class="nav-desktop">
+            <a href="#home" class="nav-link active">Home</a>
+            <a href="#about" class="nav-link">About</a>
+            <a href="#program" class="nav-link">Program</a>
+            <a href="#cfa" class="nav-link">Call for Abstracts</a>
+            <a href="#registration" class="nav-link">Registration</a>
+            <a href="#venue" class="nav-link">Venue &amp; Travel</a>
+            <a href="#contact" class="nav-link">Contact</a>
+            <!-- Sponsors 与 Committees 合并滚到同一栏 -->
+            <a href="#committees" class="nav-link">Committees</a>
+            <a href="#committees" class="nav-link">Sponsors</a>
+        </nav>
+
+        <!-- 右上汉堡按钮（仅移动端显示） -->
+        <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+            <span class="menu-line"></span>
+            <span class="menu-line"></span>
+            <span class="menu-line"></span>
+        </button>
     </div>
-    <nav class="site-nav">
-        <a href="index.html">Home</a>
-        <a href="#about">About</a>
-        <a href="program.html">Program</a>
-        <a href="call-for-abstracts.html">Call for Abstracts</a>
-        <a href="registration.html">Registration</a>
-        <a href="committees.html">Committees</a>
-        <a href="venue.html">Venue &amp; Travel</a>
-        <a href="#sponsors">Sponsors</a>
-        <a href="#contact">Contact</a>
+
+    <!-- 移动端右侧抽屉导航 -->
+    <nav class="nav-drawer" id="navDrawer">
+        <a href="#home" class="nav-link">Home</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#program" class="nav-link">Program</a>
+        <a href="#cfa" class="nav-link">Call for Abstracts</a>
+        <a href="#registration" class="nav-link">Registration</a>
+        <a href="#venue" class="nav-link">Venue &amp; Travel</a>
+        <a href="#contact" class="nav-link">Contact</a>
+        <a href="#committees" class="nav-link">Committees</a>
+        <a href="#committees" class="nav-link">Sponsors</a>
     </nav>
 </header>
 
 <main>
-    <!-- Hero / Banner -->
-    <section class="hero">
+    <!-- 顶部 Hero，作为 #home 锚点 -->
+    <section id="home" class="hero">
         <div class="hero-inner">
             <h1>2nd IUGG Symposium on Planetary Sciences</h1>
             <p class="hero-tagline">
                 Interdisciplinary Observation and Understanding of the Solar System
             </p>
             <p class="hero-meta">
-                September 21–23, 2026 &middot; Wuhan, China
+                September 21–23, 2026 · Wuhan, China
             </p>
-            <div class="hero-actions">
-                <a href="registration.html" class="btn btn-primary">Register</a>
-                <a href="call-for-abstracts.html" class="btn btn-outline">Submit Abstract</a>
-            </div>
+            <!-- 按要求：去掉中间黄色按钮 -->
         </div>
     </section>
 
     <!-- About -->
-    <section id="about" class="section section-light">
+    <section id="about" class="section section-light section-block">
         <div class="container">
             <h2>About IUGG-PS2026</h2>
             <p>
@@ -66,41 +90,18 @@
         </div>
     </section>
 
-    <!-- Topics / Sessions overview -->
-    <section class="section">
-        <div class="container">
-            <h2>Sessions &amp; Topics</h2>
-            <p class="section-intro">
-                IUGG-PS2026 covers a broad range of topics on planetary sciences through themed sessions:
-            </p>
-            <div class="grid grid-2">
-                <ul class="session-list">
-                    <li>Session 1: Lunar Exploration and Science</li>
-                    <li>Session 2: Mars Exploration and Science</li>
-                    <li>Session 3: Asteroid Exploration and Science</li>
-                    <li>Session 4: Extrasolar Planetary Systems</li>
-                    <li>Session 5: Planetary Probes Navigation and Orbiting</li>
-                </ul>
-                <ul class="session-list">
-                    <li>Session 6: Planetary Geodesy and Remote Sensing</li>
-                    <li>Session 7: Planetary Systems, Rotation and Fluid Dynamics</li>
-                    <li>Session 8: Planetary Life and Astrobiology</li>
-                    <li>Session 9: Comparative Planetology</li>
-                    <li>Session 10: Future Planetary Missions and Sciences</li>
-                </ul>
-            </div>
-            <p class="section-link">
-                For detailed scope and abstract guidelines, please visit the
-                <a href="call-for-abstracts.html">Call for Abstracts</a> page.
-            </p>
-        </div>
-    </section>
-
-    <!-- Important Dates -->
-    <section class="section section-accent">
+    <!-- Important Dates：显眼的深色板块 -->
+    <section id="dates" class="section section-accent section-block">
         <div class="container">
             <h2>Important Dates</h2>
+            <p class="section-intro">
+                Please mark the following key dates in your calendar. All deadlines refer to 23:59 (UTC+8).
+            </p>
             <div class="dates-grid">
+                <div class="date-card">
+                    <div class="date-title">Abstract Submission Opens</div>
+                    <div class="date-value">1 March 2026</div>
+                </div>
                 <div class="date-card">
                     <div class="date-title">Abstract Submission Deadline</div>
                     <div class="date-value">15 June 2026</div>
@@ -110,6 +111,14 @@
                     <div class="date-value">15 July 2026</div>
                 </div>
                 <div class="date-card">
+                    <div class="date-title">Early Registration Deadline</div>
+                    <div class="date-value">1 August 2026</div>
+                </div>
+                <div class="date-card">
+                    <div class="date-title">Regular Registration Deadline</div>
+                    <div class="date-value">1 September 2026</div>
+                </div>
+                <div class="date-card">
                     <div class="date-title">Symposium Dates</div>
                     <div class="date-value">21–23 September 2026</div>
                 </div>
@@ -117,60 +126,178 @@
         </div>
     </section>
 
-    <!-- Location -->
-    <section class="section section-light">
+    <!-- Program -->
+    <section id="program" class="section section-block">
         <div class="container">
-            <h2>Location</h2>
+            <h2>Scientific Program (Tentative)</h2>
+            <p class="section-intro">
+                A detailed program including plenary lectures, oral sessions and poster sessions will be
+                announced in due course. A tentative structure is given below.
+            </p>
+            <ul class="bullet-list">
+                <li><strong>Day 1:</strong> Opening ceremony, keynote lectures, and sessions on lunar and Mars exploration.</li>
+                <li><strong>Day 2:</strong> Sessions on small bodies, exoplanets, planetary geodesy and remote sensing.</li>
+                <li><strong>Day 3:</strong> Sessions on planetary interiors, astrobiology, comparative planetology,
+                    future missions, and closing remarks.</li>
+            </ul>
+            <p class="note">
+                The final program and detailed schedule will be posted on this page.
+            </p>
+        </div>
+    </section>
+
+    <!-- Call for Abstracts -->
+    <section id="cfa" class="section section-alt section-block">
+        <div class="container">
+            <h2>Call for Abstracts</h2>
+            <p class="section-intro">
+                Abstracts are invited for oral and poster presentations at IUGG-PS2026. Contributions are welcome
+                on all aspects of planetary sciences, including but not limited to:
+            </p>
+            <ul class="bullet-list">
+                <li>Lunar and Mars exploration and science;</li>
+                <li>Asteroids, comets and small bodies;</li>
+                <li>Exoplanets and planetary systems;</li>
+                <li>Planetary geodesy, gravity and remote sensing;</li>
+                <li>Planetary atmospheres and climate;</li>
+                <li>Interior structure and dynamics of planets;</li>
+                <li>Astrobiology and planetary habitability;</li>
+                <li>Future planetary missions and instrumentation.</li>
+            </ul>
+        </div>
+    </section>
+
+    <section class="section section-block">
+        <div class="container">
+            <h3>Submission Guidelines</h3>
+            <ul class="bullet-list">
+                <li>Abstract length: maximum 1 page in English (including figures and references);</li>
+                <li>File format: PDF (template to be provided);</li>
+                <li>Submission deadline: 15 June 2026;</li>
+                <li>Notification of acceptance: 15 July 2026.</li>
+            </ul>
+            <p class="note">
+                The online submission system link and template will be announced on this page.
+            </p>
+        </div>
+    </section>
+
+    <!-- Registration -->
+    <section id="registration" class="section section-light section-block">
+        <div class="container">
+            <h2>Registration &amp; Fees</h2>
             <p>
-                The symposium will be held in Wuhan, China, a vibrant city at the heart of the Yangtze River
-                basin and an important center for higher education and space science in China.
+                All participants are required to register online via the conference registration system
+                (link to be provided). After completing your registration and payment, you may log in with your
+                username and password to submit and manage your abstracts.
             </p>
-            <p class="section-link">
-                Practical information on venue, accommodation, and local travel will be provided on the
-                <a href="venue.html">Venue &amp; Travel</a> page.
+            <h3>Registration Fees (Tentative)</h3>
+            <table class="fee-table">
+                <thead>
+                <tr>
+                    <th>Category</th>
+                    <th>Fee (CNY)</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>Regular Participant</td>
+                    <td>2000</td>
+                </tr>
+                <tr>
+                    <td>Student</td>
+                    <td>1200</td>
+                </tr>
+                <tr>
+                    <td>Accompanying Person</td>
+                    <td>800</td>
+                </tr>
+                </tbody>
+            </table>
+            <p class="note">
+                The registration fee covers conference materials and coffee breaks. Accommodation and travel
+                expenses are not included.
             </p>
         </div>
     </section>
 
-    <!-- Sponsors -->
-    <section id="sponsors" class="section">
+    <!-- Venue & Travel -->
+    <section id="venue" class="section section-block">
         <div class="container">
-            <h2>Sponsors &amp; Supporting Institutions</h2>
-            <div class="grid grid-2">
-                <ul>
-                    <li>IUGG Union Commission on Planetary Sciences (UCPS)</li>
-                    <li>International Association of Planetary Sciences (IAPS)</li>
-                    <li>Commission on Geodesy and Remote Sensing, CGS</li>
-                </ul>
-                <ul>
-                    <li>Wuhan University, China</li>
-                    <li>Henan Polytechnic University, China</li>
-                </ul>
-            </div>
+            <h2>Venue &amp; Travel</h2>
+            <p>
+                The symposium will take place at Wuhan University, located near the East Lake in Wuhan,
+                Hubei Province, China. Detailed information on the exact venue (buildings and lecture halls),
+                as well as local transportation and recommended hotels, will be provided later.
+            </p>
+            <ul class="bullet-list">
+                <li><strong>By Air:</strong> Wuhan Tianhe International Airport (WUH) with connections to
+                    major Chinese cities.</li>
+                <li><strong>By Rail:</strong> High-speed rail services to Beijing, Shanghai, Guangzhou and other cities.</li>
+                <li><strong>Local Transport:</strong> Metro, taxi and bus services are available to reach the campus.</li>
+            </ul>
         </div>
     </section>
 
-    <!-- Contact -->
-    <section id="contact" class="section section-light">
+    <!-- Contact（特殊颜色突出） -->
+    <section id="contact" class="section section-contact section-block">
         <div class="container">
             <h2>Contact</h2>
-            <p>For general questions regarding IUGG-PS2026, please contact:</p>
+            <p>For questions regarding the symposium, please contact:</p>
             <div class="grid grid-2">
                 <div>
                     <h3>Scientific Inquiries</h3>
                     <p>
                         Prof. Shuanggen Jin<br>
                         Henan Polytechnic University, Jiaozuo, China<br>
-                        E-mail: <a href="mailto:sgjin@hpu.edu.cn">sgjin@hpu.edu.cn</a>
+                        E-mail:
+                        <a href="mailto:sgjin@hpu.edu.cn">sgjin@hpu.edu.cn</a>
                     </p>
                 </div>
                 <div>
                     <h3>Local Organization &amp; Logistics</h3>
                     <p>
                         Prof. Jianguo Yan<br>
-                        Wuhan University, China<br>
-                        E-mail: <a href="mailto:jgyan@whu.edu.cn">jgyan@whu.edu.cn</a>
+                        Wuhan University, Wuhan, China<br>
+                        E-mail:
+                        <a href="mailto:jgyan@whu.edu.cn">jgyan@whu.edu.cn</a>
                     </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Committees + Sponsors 合并深色底 -->
+    <section id="committees" class="section section-dark section-block">
+        <div class="container">
+            <h2>Committees &amp; Sponsors</h2>
+
+            <div class="grid grid-2">
+                <div>
+                    <h3>International Scientific Committee (ISC)</h3>
+                    <ul class="committee-list">
+                        <li>Chair: Shuanggen Jin (Henan Polytechnic University, China)</li>
+                        <li>Co-Chair: Jianguo Yan (Wuhan University, China)</li>
+                        <li>Members: to be announced.</li>
+                    </ul>
+
+                    <h3>Local Organizing Committee (LOC)</h3>
+                    <ul class="committee-list">
+                        <li>Chair: Jianguo Yan (Wuhan University, China)</li>
+                        <li>Co-Chair: Shuanggen Jin (Henan Polytechnic University, China)</li>
+                        <li>Members: to be announced.</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3>Sponsors &amp; Supporting Institutions</h3>
+                    <ul class="committee-list">
+                        <li>IUGG Union Commission on Planetary Sciences (UCPS)</li>
+                        <li>International Association of Planetary Sciences (IAPS)</li>
+                        <li>Commission on Geodesy and Remote Sensing, CGS</li>
+                        <li>Wuhan University, China</li>
+                        <li>Henan Polytechnic University, China</li>
+                    </ul>
                 </div>
             </div>
         </div>
@@ -188,5 +315,7 @@
         </div>
     </div>
 </footer>
+
+<script src="script.js"></script>
 </body>
 </html>
