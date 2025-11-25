@@ -236,6 +236,12 @@ a:hover {
     margin-bottom: 12px;
     color: #ffffff;
 }
+/* 抽屉导航中，当前激活的菜单项：白底 + 深色文字 */
+.nav-drawer .nav-link.active {
+    background-color: #ffffff;
+    color: #0b2341;
+}
+
 
 /* 兼容旧写法：如果 HTML 里还在用 .site-nav，当成桌面导航的一种 */
 .site-nav {
