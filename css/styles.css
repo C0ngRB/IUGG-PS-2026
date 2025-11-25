@@ -78,21 +78,21 @@ a:hover {
 /* 深色底中文字 */
 .section-dark h2,
 .section-dark h3{
-    color: #EAEAEA;
+    color: #D6D6D6;
 }
 .section-dark p,
 .section-dark li {
-    color: #ECECEC;
+    color: #CFCFCF;
 }
 
 /* 深色强调区（Important Dates） */
 .section-accent {
     background: linear-gradient(135deg, #0b2341, #243b64);
-    color: #ECECEC;
+    color: #CFCFCF;
 }
 
 .section-accent h2 {
-    color: #EAEAEA;
+    color: #D6D6D6;
 }
 
 .section-intro {
