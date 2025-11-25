@@ -236,11 +236,15 @@ a:hover {
     margin-bottom: 12px;
     color: #ffffff;
 }
-/* 抽屉导航中，当前激活的菜单项：白底 + 深色文字 */
+
 .nav-drawer .nav-link.active {
     background-color: #ffffff;
-    color: #0b2341;
+    color: #0b2341 !important;  /* 强制覆盖通用颜色 */
+    border-radius: 999px;
+    padding-left: 18px;
+    padding-right: 18px;
 }
+
 
 
 /* 兼容旧写法：如果 HTML 里还在用 .site-nav，当成桌面导航的一种 */
@@ -281,6 +285,27 @@ a:hover {
     background-position: center;
     background-repeat: no-repeat;
 }
+/* 小屏（手机）时拉高头图区域，防止文字被裁掉 */
+@media (max-width: 768px) {
+    .hero {
+        padding-top: 60%;       /* 从 25% 提高到 60%，高度明显增加 */
+        min-height: 60vh;       /* 至少占 60% 的视口高度，保证文字有空间 */
+    }
+
+    .hero h1 {
+        font-size: 24px;
+        line-height: 1.25;
+    }
+
+    .hero-tagline {
+        font-size: 16px;
+    }
+
+    .hero-meta {
+        font-size: 14px;
+    }
+}
+
 
 .hero-inner {
     position: absolute;
