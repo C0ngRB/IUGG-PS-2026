@@ -31,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 关闭抽屉导航（统一封装，点击链接/遮罩都用这个）
+    // 关闭抽屉导航
     function closeDrawer() {
         if (navDrawer) {
             navDrawer.classList.remove("open");
@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
 
-    // 汉堡按钮控制抽屉导航和自身动画 + 遮罩层
+    // 汉堡按钮控制抽屉导航和遮罩层
     if (menuToggle && navDrawer) {
         menuToggle.addEventListener("click", function () {
             const willOpen = !navDrawer.classList.contains("open");
@@ -83,14 +83,14 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    // 根据初始 hash 设置高亮与滚动，默认 Home
+    // 初始 hash
     const initialHash = window.location.hash || "#home";
     setActive(initialHash);
     if (initialHash !== "#home") {
         scrollToHash(initialHash);
     }
 
-    // === 向下隐藏 / 向上显示导航栏逻辑 ===
+    // 向下滚动隐藏，向上滚动显示 header
     let lastScrollY = window.pageYOffset || 0;
 
     function handleScroll() {
@@ -98,14 +98,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const currentY = window.pageYOffset || 0;
         const delta = currentY - lastScrollY;
-        const threshold = 5; // 忽略很小的抖动
+        const threshold = 5; // 忽略微小抖动
 
         if (Math.abs(delta) > threshold) {
             if (delta > 0 && currentY > header.offsetHeight) {
-                // 向下滚动且已离开顶部：隐藏导航
                 header.classList.add("header-hidden");
             } else {
-                // 向上滚动或回到顶部：显示导航
                 header.classList.remove("header-hidden");
             }
             lastScrollY = currentY;
@@ -113,4 +111,23 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true });
+
+    // ===== Committees Members 折叠逻辑 =====
+    const collapseToggles = document.querySelectorAll("[data-collapse-target]");
+
+    collapseToggles.forEach(btn => {
+        btn.addEventListener("click", function () {
+            const targetSelector = btn.getAttribute("data-collapse-target");
+            if (!targetSelector) return;
+            const panel = document.querySelector(targetSelector);
+            if (!panel) return;
+
+            const isOpen = panel.classList.toggle("open");
+            btn.classList.toggle("open", isOpen);
+
+            const labelOpen = btn.getAttribute("data-label-open") || "Hide members";
+            const labelClosed = btn.getAttribute("data-label-closed") || "Show members";
+            btn.textContent = isOpen ? labelOpen : labelClosed;
+        });
+    });
 });

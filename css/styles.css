@@ -1,4 +1,7 @@
-/* ========== Reset ========== */
+/* =========================
+   Base reset & typography
+   ========================= */
+
 *,
 *::before,
 *::after {
@@ -13,12 +16,6 @@ body {
     background-color: #f4f6f8;
 }
 
-/* 平滑滚动 */
-html {
-    scroll-behavior: smooth;
-}
-
-/* ========== Typography ========== */
 h1, h2, h3, h4 {
     margin-top: 0;
     font-weight: 600;
@@ -39,7 +36,10 @@ a:hover {
     text-decoration: underline;
 }
 
-/* ========== Layout Helpers ========== */
+/* =========================
+   Layout helpers
+   ========================= */
+
 .container {
     max-width: 1100px;
     margin: 0 auto;
@@ -51,141 +51,155 @@ a:hover {
     background-color: #ffffff;
 }
 
-/* 每个板块顶部加一道浅边界，增强区分度 */
-.section-block {
-    border-top: 1px solid #dde3ee;
-}
-
 .section-light {
     background-color: #f9fbfd;
 }
 
-/* 轻微偏灰蓝，增加和其它段落的区分 */
 .section-alt {
-    background-color: #eef3fb;
+    background-color: #ffffff;
 }
 
-/* 深色底，用于 Important Dates / 底部 Committees & Sponsors */
-.section-dark {
-    background: linear-gradient(135deg, #0b2341, #243b64);
-    color: #ECECEC;
+.section-block {
+    /* 预留给区块间距等扩展用 */
 }
 
-.section-contact {
-    background-color: #fff6e0;
-}
-
-/* 深色底中文字 */
-.section-dark h2,
-.section-dark h3{
-    color: #D6D6D6;
-}
-.section-dark p,
-.section-dark li {
-    color: #CFCFCF;
-}
-
-/* 深色强调区（Important Dates） */
 .section-accent {
     background: linear-gradient(135deg, #0b2341, #243b64);
-    color: #CFCFCF;
+    color: #e5e9f0; /* 略带灰的白色，避免太刺眼 */
 }
 
 .section-accent h2 {
-    color: #D6D6D6;
+    color: #f3f5fb;
+}
+
+.section-dark {
+    background: linear-gradient(135deg, #0b2341, #243b64);
+    color: #e5e9f0;
+}
+
+.section-dark h2,
+.section-dark h3 {
+    color: #f3f5fb;
+}
+
+.section-dark p,
+.section-dark li {
+    color: #e5e9f0;
 }
 
 .section-intro {
     max-width: 720px;
 }
 
-/* ========== Header & Navigation ========== */
+/* 联系方式区块可以稍微突出一点 */
+.section-contact {
+    background-color: #f0f4fa;
+}
+
+/* =========================
+   Header & navigation
+   ========================= */
+
 .site-header {
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
     background-color: #0b2341;
     color: #ffffff;
-    /* 新增：隐藏/显示时的动画 */
-    transition: transform 0.25s ease;
+    transition: transform 0.2s ease;
 }
-/* 向下滚动时隐藏导航栏 */
+
+/* 向下滚动时隐藏导航栏，向上滚动显示 */
 .site-header.header-hidden {
     transform: translateY(-100%);
 }
 
-
+/* 内部左右布局容器（桌面端） */
 .header-inner {
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 10px 20px;
     display: flex;
     align-items: center;
     justify-content: space-between;
+    padding: 12px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
 }
 
+/* 品牌区 */
 .brand-title {
     font-size: 20px;
     font-weight: 700;
+    color: #ffffff;
 }
 
 .brand-subtitle {
     font-size: 12px;
-    opacity: 0.8;
+    color: rgba(255, 255, 255, 0.8);
 }
 
-/* Desktop nav */
+/* 顶部导航（桌面端） */
 .nav-desktop {
     display: flex;
-    gap: 14px;
+    flex-wrap: wrap;
     align-items: center;
+    gap: 10px;
 }
 
-.nav-desktop .nav-link {
+.nav-link {
     font-size: 14px;
-    color: #ffffff;
     padding: 6px 10px;
-    border-radius: 16px;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    border-radius: 4px;
+    color: #ffffff;
+    text-decoration: none;
 }
 
-.nav-desktop .nav-link:hover {
+.nav-link:hover {
     background-color: rgba(255, 255, 255, 0.12);
     text-decoration: none;
 }
 
-.nav-desktop .nav-link.active {
+.nav-link.active {
     background-color: #ffffff;
     color: #0b2341;
 }
 
-/* Hamburger button (mobile) */
+/* 汉堡按钮（移动端） */
 .menu-toggle {
-    display: none;
-    width: 40px;
-    height: 40px;
-    border-radius: 999px;
-    border: 1px solid rgba(255, 255, 255, 0.7);
-    background: transparent;
-    padding: 8px;
+    display: none; /* 默认桌面端隐藏 */
+    position: relative;
+    width: 30px;
+    height: 22px;
+    border: none;
+    background-color: transparent;
+    padding: 0;
     cursor: pointer;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    gap: 4px;
 }
 
 .menu-line {
-    width: 100%;
-    height: 2px;
-    background-color: #ffffff;
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 3px;
     border-radius: 999px;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    background-color: #ffffff;
+    transition: transform 0.2s ease, opacity 0.2s ease, top 0.2s ease, bottom 0.2s ease;
 }
 
-/* 汉堡 -> X 动画 */
+.menu-line:nth-child(1) {
+    top: 0;
+}
+
+.menu-line:nth-child(2) {
+    top: 9.5px;
+}
+
+.menu-line:nth-child(3) {
+    bottom: 0;
+}
+
+/* 汉堡按钮展开成 X 的动画 */
 .menu-toggle.open .menu-line:nth-child(1) {
-    transform: translateY(6px) rotate(45deg);
+    top: 9.5px;
+    transform: rotate(45deg);
 }
 
 .menu-toggle.open .menu-line:nth-child(2) {
@@ -193,24 +207,22 @@ a:hover {
 }
 
 .menu-toggle.open .menu-line:nth-child(3) {
-    transform: translateY(-6px) rotate(-45deg);
+    bottom: auto;
+    top: 9.5px;
+    transform: rotate(-45deg);
 }
 
-/* Mobile drawer nav */
+/* 抽屉导航（移动端） */
 .nav-drawer {
     position: fixed;
     top: 0;
     right: 0;
-    width: 260px;
+    width: 240px;
     height: 100vh;
     background-color: #0b2341;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.35);
-    padding: 70px 20px 20px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+    padding: 70px 24px 24px;
     transform: translateX(100%);
-    transition: transform 0.25s ease;
+    transition: transform 0.2s ease;
     z-index: 90;
 }
 
@@ -219,39 +231,44 @@ a:hover {
 }
 
 .nav-drawer .nav-link {
+    display: block;
+    margin-bottom: 12px;
     color: #ffffff;
-    font-size: 16px;
-    padding: 8px 10px;
-    border-radius: 6px;
 }
 
-.nav-drawer .nav-link.active {
-    background-color: #ffffff;
-    color: #0b2341;
+/* 兼容旧写法：如果 HTML 里还在用 .site-nav，当成桌面导航的一种 */
+.site-nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
 }
-/* 抽屉导航的点击遮罩层 */
+
+/* 抽屉导航遮罩层 */
 .nav-overlay {
     position: fixed;
-    inset: 0; /* 等价于 top:0; right:0; bottom:0; left:0; */
+    inset: 0;
     background-color: rgba(0, 0, 0, 0.35);
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.2s ease;
-    z-index: 80; /* 比内容高，比 nav-drawer 略低 */
+    z-index: 80;
 }
 
-/* 抽屉打开时显示遮罩层 */
 .nav-overlay.open {
     opacity: 1;
     visibility: visible;
 }
 
+/* =========================
+   Hero
+   ========================= */
 
-/* ========== Hero ========== */
 .hero {
     position: relative;
     width: 100%;
-    padding-top: 25%; /* 4:1 ratio */
+    /* 4:1 长宽比：高度 = 宽度的 1/4 */
+    padding-top: 25%;
     background-image: url("../images/conference.png");
     background-size: cover;
     background-position: center;
@@ -268,6 +285,7 @@ a:hover {
     text-align: center;
     color: #ffffff;
     padding: 0 20px;
+    z-index: 1;
 }
 
 .hero h1 {
@@ -285,7 +303,10 @@ a:hover {
     opacity: 0.9;
 }
 
-/* ========== Buttons ========== */
+/* =========================
+   Buttons
+   ========================= */
+
 .btn {
     display: inline-block;
     padding: 10px 20px;
@@ -317,7 +338,10 @@ a:hover {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-/* ========== Grid ========== */
+/* =========================
+   Grids
+   ========================= */
+
 .grid {
     display: grid;
     gap: 24px;
@@ -327,19 +351,23 @@ a:hover {
     grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
-/* ========== Important Dates 卡片 ========== */
+/* Important dates grid */
 .dates-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 20px;
-    margin-top: 24px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
 }
 
 .date-card {
-    padding: 16px 18px;
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    background-color: rgba(255, 255, 255, 0.08);
+    padding: 16px;
+    border-radius: 8px;
+    background-color: rgba(0, 0, 0, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.section:not(.section-accent) .date-card {
+    background-color: #ffffff;
+    border-color: #d0d7e2;
 }
 
 .date-title {
@@ -353,16 +381,9 @@ a:hover {
     font-weight: 600;
 }
 
-/* ========== Lists / Tables ========== */
-.session-list {
-    list-style: none;
-    padding-left: 0;
-    margin: 0;
-}
-
-.session-list li {
-    padding: 4px 0;
-}
+/* =========================
+   Lists & tables
+   ========================= */
 
 .bullet-list {
     padding-left: 20px;
@@ -389,27 +410,36 @@ a:hover {
     background-color: #f0f4fa;
 }
 
+/* =========================
+   Committees & Sponsors
+   ========================= */
+
 .committee-list {
     list-style: none;
     padding-left: 0;
-    margin-bottom: 16px;
+    margin-top: 4px;
+    margin-bottom: 12px;
 }
 
 .committee-list li {
-    padding: 4px 0;
+    padding: 2px 0;
 }
 
+/* 备注类文字 */
 .note {
     font-size: 13px;
     color: #6b7685;
 }
 
-/* ========== Footer ========== */
+/* =========================
+   Footer
+   ========================= */
+
 .site-footer {
     background-color: #0b2341;
     color: #ffffff;
     padding: 20px 0;
-    margin-top: 0;
+    margin-top: 40px;
 }
 
 .footer-inner {
@@ -418,9 +448,6 @@ a:hover {
     align-items: center;
     gap: 12px;
     font-size: 13px;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 0 20px;
 }
 
 .footer-title {
@@ -436,22 +463,78 @@ a:hover {
     opacity: 0.85;
 }
 
-/* ========== 响应式 ========== */
-@media (max-width: 768px) {
+/* =========================
+   Committees 折叠样式
+   ========================= */
+
+.committee-collapse {
+    margin-top: 8px;
+    margin-bottom: 16px;
+}
+
+.committee-collapse-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.committee-collapse-title {
+    font-size: 14px;
+}
+
+/* 折叠按钮 */
+.collapse-toggle {
+    padding: 4px 12px;
+    font-size: 13px;
+    border-radius: 999px;
+    border: 1px solid #d0d7e2;
+    background-color: transparent;
+    cursor: pointer;
+}
+
+/* 深色底下按钮的颜色调整 */
+.section-dark .collapse-toggle {
+    color: #e5e9f0;
+    border-color: rgba(229, 233, 240, 0.5);
+}
+
+.section-dark .collapse-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.section-dark .collapse-toggle.open {
+    background-color: rgba(255, 255, 255, 0.15);
+}
+
+/* 折叠内容区域 */
+.collapsible {
+    display: none;
+    margin-top: 8px;
+}
+
+.collapsible.open {
+    display: block;
+}
+
+/* =========================
+   Responsive
+   ========================= */
+
+@media (max-width: 900px) {
+    /* 头部布局：减小左右 padding */
     .header-inner {
         padding: 10px 16px;
     }
 
+    /* 桌面导航隐藏，显示汉堡按钮 */
     .nav-desktop {
         display: none;
     }
 
     .menu-toggle {
-        display: flex;
-    }
-
-    .hero {
-        padding-top: 45%;
+        display: block;
     }
 
     .hero h1 {
@@ -462,8 +545,8 @@ a:hover {
         font-size: 16px;
     }
 
-    .hero-meta {
-        font-size: 13px;
+    .dates-grid {
+        grid-template-columns: 1fr;
     }
 
     .grid-2 {
@@ -473,5 +556,23 @@ a:hover {
     .footer-inner {
         flex-direction: column;
         align-items: flex-start;
+    }
+}
+
+@media (max-width: 600px) {
+    .hero-inner {
+        padding: 0 12px;
+    }
+
+    .hero h1 {
+        font-size: 20px;
+    }
+
+    .hero-tagline {
+        font-size: 14px;
+    }
+
+    .hero-meta {
+        font-size: 13px;
     }
 }
