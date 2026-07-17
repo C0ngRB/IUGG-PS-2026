@@ -160,6 +160,11 @@
     }
   }
 
+  // Auto-open forgot password if URL contains #forgot
+  if (window.location.hash === '#forgot') {
+    showForgot();
+  }
+
   var regEmail = document.getElementById('regEmail');
   var emailError = document.getElementById('emailError');
   var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
