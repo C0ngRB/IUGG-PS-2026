@@ -27,7 +27,7 @@
       </div>
       <button type="submit" class="btn-gold" style="width:100%">Log In</button>
       <div class="auth-link">
-        <a href="#" id="goForgot">Forgot Password?</a>
+        <a href="forgot-password.html">Forgot Password?</a>
       </div>
       <div class="auth-link">
         Don't have an account? <a href="#" id="goRegister">Register here</a>
@@ -88,40 +88,6 @@
         Already have an account? <a href="#" id="goLogin">Log in</a>
       </div>
     </form>
-
-    <!-- Forgot Password Form -->
-    <form class="auth-form" id="forgotForm" style="display:none;">
-      <div class="form-errors" id="forgotErrors"></div>
-      <div id="forgotStep1">
-        <p style="font-size:13px;color:#4b5563;margin-bottom:14px;">
-          Enter your registered email to receive a 6-digit verification code.
-        </p>
-        <div class="form-group">
-          <label>Email</label>
-          <input type="email" id="forgotEmail" placeholder="you@example.com" required>
-        </div>
-        <button type="button" class="btn-gold" style="width:100%" id="sendCodeBtn">Send Verification Code</button>
-      </div>
-      <div id="forgotStep2" style="display:none;">
-        <div class="form-group">
-          <label>Verification Code</label>
-          <input type="text" id="forgotCode" placeholder="6-digit code" maxlength="6" required>
-          <div class="form-hint">Code valid for 10 minutes</div>
-        </div>
-        <div class="form-group">
-          <label>New Password</label>
-          <input type="password" id="forgotPassword" placeholder="At least 8 characters" minlength="8" required>
-        </div>
-        <div class="form-group">
-          <label>Confirm New Password</label>
-          <input type="password" id="forgotConfirm" placeholder="Re-enter password" minlength="8" required>
-        </div>
-        <button type="submit" class="btn-gold" style="width:100%">Reset Password</button>
-      </div>
-      <div class="auth-link">
-        <a href="#" id="goLoginFromForgot">Back to Log In</a>
-      </div>
-    </form>
   </div>
 </div>
 
@@ -158,11 +124,6 @@
     } else {
       window.location.href = 'dashboard.html';
     }
-  }
-
-  // Auto-open forgot password if URL contains #forgot
-  if (window.location.hash === '#forgot') {
-    showForgot();
   }
 
   var regEmail = document.getElementById('regEmail');
@@ -215,76 +176,7 @@
     }
   });
 
-  // Forgot Password flow
-  var forgotForm = document.getElementById('forgotForm');
-  var forgotEmail = document.getElementById('forgotEmail');
-  var forgotStep1 = document.getElementById('forgotStep1');
-  var forgotStep2 = document.getElementById('forgotStep2');
-  var forgotErrors = document.getElementById('forgotErrors');
-
-  function showForgot() {
-    loginForm.style.display = 'none';
-    registerForm.style.display = 'none';
-    forgotForm.style.display = '';
-    forgotStep1.style.display = '';
-    forgotStep2.style.display = 'none';
-    forgotErrors.innerHTML = '';
-    tabLogin.classList.remove('active');
-    tabRegister.classList.remove('active');
-  }
-
-  document.getElementById('goForgot').addEventListener('click', function (e) { e.preventDefault(); showForgot(); });
-  document.getElementById('goLoginFromForgot').addEventListener('click', function (e) { e.preventDefault(); showLogin(); });
-
-  document.getElementById('sendCodeBtn').addEventListener('click', async function () {
-    var email = forgotEmail.value.trim();
-    if (!email) {
-      forgotErrors.innerHTML = '<div>Please enter your email</div>';
-      return;
-    }
-    document.getElementById('sendCodeBtn').disabled = true;
-    document.getElementById('sendCodeBtn').textContent = 'Sending...';
-    try {
-      await Auth.request('POST', '/auth/forgot-password', { email: email });
-      forgotErrors.innerHTML = '<div style="color:#065f46;">Verification code sent! Check server console.</div>';
-      forgotStep1.style.display = 'none';
-      forgotStep2.style.display = '';
-    } catch (err) {
-      forgotErrors.innerHTML = '<div>Failed to send code. Please try again.</div>';
-    }
-    document.getElementById('sendCodeBtn').disabled = false;
-    document.getElementById('sendCodeBtn').textContent = 'Send Verification Code';
-  });
-
-  forgotForm.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    forgotErrors.innerHTML = '';
-    var email = forgotEmail.value.trim();
-    var code = document.getElementById('forgotCode').value.trim();
-    var password = document.getElementById('forgotPassword').value;
-    var confirm = document.getElementById('forgotConfirm').value;
-
-    if (password.length < 8) {
-      forgotErrors.innerHTML = '<div>Password must be at least 8 characters</div>';
-      return;
-    }
-    if (password !== confirm) {
-      forgotErrors.innerHTML = '<div>Passwords do not match</div>';
-      return;
-    }
-
-    try {
-      await Auth.request('POST', '/auth/reset-password', {
-        email: email, code: code, new_password: password, confirm_password: confirm
-      });
-      alert('Password reset successfully! You can now log in.');
-      showLogin();
-    } catch (err) {
-      var msgs = err.errors || ['Reset failed'];
-      forgotErrors.innerHTML = msgs.map(function (m) { return '<div>' + m + '</div>'; }).join('');
-    }
-  });
-
+  // Register
   registerForm.addEventListener('submit', async function (e) {
     e.preventDefault();
     var errors = document.getElementById('registerErrors');
