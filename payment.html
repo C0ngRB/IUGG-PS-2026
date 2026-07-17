@@ -33,6 +33,13 @@
           <img src="images/QR.jpg" alt="Payment QR Code" style="max-width:240px;">
         </div>
       </div>
+      <div class="pay-note" style="margin-bottom:12px;">
+        &#128203; <strong>Payment Reference:</strong> Please include the following as a note when paying so we can identify your payment.
+        <div style="margin-top:6px;padding:8px 12px;background:#fff;border-radius:4px;font-size:13px;color:#1b2733;">
+          <strong>Name:</strong> <span id="refName"></span><br>
+          <strong>Email:</strong> <span id="refEmail"></span>
+        </div>
+      </div>
       <div class="pay-note">
         &#9888; After completing payment, please keep your transaction record.
         Your status will update after manual verification.<br>
@@ -62,6 +69,8 @@
   if (user.participant_type === 'student') {
     feeEl.innerHTML = '¥1,000 <small>CNY</small>';
   }
+  document.getElementById('refName').textContent = user.full_name;
+  document.getElementById('refEmail').textContent = user.email;
 })();
 </script>
 </body>
