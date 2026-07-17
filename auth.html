@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Log In / Register — IUGG-PS2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="auth-page">
+  <div class="auth-wrapper">
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tabLogin">Log In</button>
+      <button class="auth-tab" id="tabRegister">Register</button>
+    </div>
+
+    <!-- Login Form -->
+    <form class="auth-form" id="loginForm">
+      <div class="form-errors" id="loginErrors"></div>
+      <div class="form-group">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="Enter password" required>
+      </div>
+      <button type="submit" class="btn-gold" style="width:100%">Log In</button>
+      <div class="auth-link">
+        Don't have an account? <a href="#" id="goRegister">Register here</a>
+      </div>
+    </form>
+
+    <!-- Register Form -->
+    <form class="auth-form" id="registerForm" style="display:none;">
+      <div class="form-errors" id="registerErrors"></div>
+      <div class="form-group">
+        <label><span class="required">*</span> Full Name</label>
+        <input type="text" id="regFullName" placeholder="Your full name" required>
+      </div>
+      <div class="form-group">
+        <label><span class="required">*</span> Email</label>
+        <input type="email" id="regEmail" placeholder="you@example.com" required>
+        <div class="form-error" id="emailError"></div>
+      </div>
+      <div class="form-group">
+        <label><span class="required">*</span> Affiliation</label>
+        <input type="text" id="regAffiliation" placeholder="Your institution / organization" required>
+      </div>
+      <div class="form-group">
+        <label><span class="required">*</span> Mobile Number</label>
+        <input type="tel" id="regMobile" placeholder="+86 138xxxx" required>
+      </div>
+      <div class="form-group">
+        <label><span class="required">*</span> Participant Type</label>
+        <select id="regParticipantType" required>
+          <option value="">-- Please select --</option>
+          <option value="student">Students 学生</option>
+          <option value="regular">Regular Participants 在职人员</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label><span class="required">*</span> Oral Presentation</label>
+        <select id="regOral" required>
+          <option value="">-- Please select --</option>
+          <option value="yes">Yes</option>
+          <option value="no">No</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Job Title <span class="optional">(Chinese experts only 仅中国专家填写)</span></label>
+        <input type="text" id="regJobTitle" placeholder="e.g. Professor">
+      </div>
+      <div class="form-group">
+        <label><span class="required">*</span> Password</label>
+        <input type="password" id="regPassword" placeholder="At least 8 characters" required minlength="8">
+      </div>
+      <div class="form-group">
+        <label><span class="required">*</span> Confirm Password</label>
+        <input type="password" id="regConfirm" placeholder="Re-enter password" required minlength="8">
+        <div class="form-error" id="confirmError"></div>
+      </div>
+      <button type="submit" class="btn-gold" style="width:100%">Create Account &amp; Proceed to Payment</button>
+      <div class="auth-link">
+        Already have an account? <a href="#" id="goLogin">Log in</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+(function () {
+  var loginForm = document.getElementById('loginForm');
+  var registerForm = document.getElementById('registerForm');
+  var tabLogin = document.getElementById('tabLogin');
+  var tabRegister = document.getElementById('tabRegister');
+
+  function showLogin() {
+    loginForm.style.display = '';
+    registerForm.style.display = 'none';
+    tabLogin.classList.add('active');
+    tabRegister.classList.remove('active');
+  }
+
+  function showRegister() {
+    loginForm.style.display = 'none';
+    registerForm.style.display = '';
+    tabLogin.classList.remove('active');
+    tabRegister.classList.add('active');
+  }
+
+  tabLogin.addEventListener('click', function (e) { e.preventDefault(); showLogin(); });
+  tabRegister.addEventListener('click', function (e) { e.preventDefault(); showRegister(); });
+  document.getElementById('goRegister').addEventListener('click', function (e) { e.preventDefault(); showRegister(); });
+  document.getElementById('goLogin').addEventListener('click', function (e) { e.preventDefault(); showLogin(); });
+
+  if (Auth.isLoggedIn()) {
+    if (Auth.isAdmin()) {
+      window.location.href = 'admin.html';
+    } else {
+      window.location.href = 'dashboard.html';
+    }
+  }
+
+  var regEmail = document.getElementById('regEmail');
+  var emailError = document.getElementById('emailError');
+  var EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  regEmail.addEventListener('input', function () {
+    if (regEmail.value && !EMAIL_RE.test(regEmail.value)) {
+      emailError.textContent = 'Please enter a valid email address';
+    } else {
+      emailError.textContent = '';
+    }
+  });
+
+  var regPassword = document.getElementById('regPassword');
+  var regConfirm = document.getElementById('regConfirm');
+  var confirmError = document.getElementById('confirmError');
+  function checkConfirm() {
+    if (regConfirm.value && regConfirm.value !== regPassword.value) {
+      confirmError.textContent = 'Passwords do not match';
+    } else {
+      confirmError.textContent = '';
+    }
+  }
+  regPassword.addEventListener('input', checkConfirm);
+  regConfirm.addEventListener('input', checkConfirm);
+
+  loginForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var errors = document.getElementById('loginErrors');
+    errors.innerHTML = '';
+
+    var email = document.getElementById('loginEmail').value.trim();
+    var password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+      errors.innerHTML = '<div>Please fill in all fields</div>';
+      return;
+    }
+
+    try {
+      await Auth.login(email, password);
+      if (Auth.isAdmin()) {
+        window.location.href = 'admin.html';
+      } else {
+        window.location.href = 'dashboard.html';
+      }
+    } catch (err) {
+      var msgs = err.errors || ['Login failed'];
+      errors.innerHTML = msgs.map(function (m) { return '<div>' + m + '</div>'; }).join('');
+    }
+  });
+
+  registerForm.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var errors = document.getElementById('registerErrors');
+    errors.innerHTML = '';
+
+    var fields = {
+      full_name: document.getElementById('regFullName').value.trim(),
+      email: document.getElementById('regEmail').value.trim(),
+      affiliation: document.getElementById('regAffiliation').value.trim(),
+      mobile: document.getElementById('regMobile').value.trim(),
+      participant_type: document.getElementById('regParticipantType').value,
+      oral_presentation: document.getElementById('regOral').value,
+      job_title: document.getElementById('regJobTitle').value.trim(),
+      password: document.getElementById('regPassword').value,
+      confirm_password: document.getElementById('regConfirm').value,
+    };
+
+    var clientErrors = [];
+    if (!fields.full_name) clientErrors.push('Full name is required');
+    if (!fields.email || !EMAIL_RE.test(fields.email)) clientErrors.push('Valid email is required');
+    if (!fields.affiliation) clientErrors.push('Affiliation is required');
+    if (!fields.mobile) clientErrors.push('Mobile number is required');
+    if (!fields.participant_type) clientErrors.push('Select your participant type');
+    if (!fields.oral_presentation) clientErrors.push('Select whether you will give an oral presentation');
+    if (fields.password.length < 8) clientErrors.push('Password must be at least 8 characters');
+    if (fields.password !== fields.confirm_password) clientErrors.push('Passwords do not match');
+
+    if (clientErrors.length > 0) {
+      errors.innerHTML = clientErrors.map(function (m) { return '<div>' + m + '</div>'; }).join('');
+      return;
+    }
+
+    try {
+      await Auth.register(fields);
+      window.location.href = 'payment.html';
+    } catch (err) {
+      var msgs = err.errors || ['Registration failed'];
+      errors.innerHTML = msgs.map(function (m) { return '<div>' + m + '</div>'; }).join('');
+    }
+  });
+})();
+</script>
+</body>
+</html>

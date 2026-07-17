@@ -29,6 +29,7 @@
             <a href="#contact" class="nav-link">Contact</a>
             <a href="#committees" class="nav-link">Committees</a>
             <a href="#committees" class="nav-link">Sponsors</a>
+            <a href="auth.html" class="nav-link" id="navAuth">Log in / Register</a>
         </nav>
 
         <!-- 移动端汉堡按钮 -->
@@ -50,6 +51,7 @@
         <a href="#contact" class="nav-link">Contact</a>
         <a href="#committees" class="nav-link">Committees</a>
         <a href="#committees" class="nav-link">Sponsors</a>
+        <a href="auth.html" class="nav-link" id="navAuthMobile">Log in / Register</a>
     </nav>
 
     <!-- 抽屉遮罩层：点击关闭 -->
@@ -487,6 +489,27 @@
 </footer>
 
 <script src="script.js"></script>
+<script src="js/auth.js"></script>
+<script>
+(function () {
+  if (Auth.isLoggedIn()) {
+    var user = Auth.getUser();
+    var label = user.role === 'admin' ? 'Admin' : 'Dashboard';
+    var href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    var navAuth = document.getElementById('navAuth');
+    if (navAuth) {
+      navAuth.textContent = label;
+      navAuth.href = href;
+      navAuth.title = user.email;
+    }
+    var navAuthMobile = document.getElementById('navAuthMobile');
+    if (navAuthMobile) {
+      navAuthMobile.textContent = label;
+      navAuthMobile.href = href;
+    }
+  }
+})();
+</script>
 </body>
 </html>
 

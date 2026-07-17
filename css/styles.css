@@ -609,3 +609,586 @@ a:hover {
         font-size: 13px;
     }
 }
+
+/* =========================
+   Auth / Dashboard / Admin / Payment
+   ========================= */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f4f6f8;
+    padding: 40px 20px;
+}
+
+.auth-wrapper {
+    width: 100%;
+    max-width: 480px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 16px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.auth-tabs {
+    display: flex;
+    border-bottom: 1px solid #d0d7e2;
+    background: #f9fbfd;
+}
+
+.auth-tab {
+    flex: 1;
+    text-align: center;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 600;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #6b7685;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    font-family: inherit;
+}
+
+.auth-tab.active {
+    color: #0b2341;
+    border-bottom-color: #ffb547;
+    background: #fff;
+}
+
+.auth-form {
+    padding: 24px;
+}
+
+.form-group {
+    margin-bottom: 14px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #12212f;
+    margin-bottom: 4px;
+}
+
+.form-group label .required {
+    color: #c00;
+}
+
+.form-group label .optional {
+    color: #9ca3af;
+    font-weight: 400;
+    font-size: 12px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid #d0d7e2;
+    border-radius: 6px;
+    font-size: 14px;
+    box-sizing: border-box;
+    font-family: inherit;
+    background: #fff;
+    color: #1b2733;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #ffb547;
+    box-shadow: 0 0 0 3px rgba(255, 181, 71, 0.15);
+}
+
+.form-error {
+    color: #c00;
+    font-size: 12px;
+    margin-top: 2px;
+    min-height: 16px;
+}
+
+.form-errors {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 14px;
+    font-size: 13px;
+    color: #b91c1c;
+    display: none;
+}
+
+.form-errors:not(:empty) {
+    display: block;
+}
+
+.form-hint {
+    font-size: 11px;
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.auth-link {
+    text-align: center;
+    margin-top: 14px;
+    font-size: 13px;
+    color: #6b7685;
+}
+
+.auth-link a {
+    color: #0055aa;
+    text-decoration: none;
+}
+
+.auth-link a:hover {
+    text-decoration: underline;
+}
+
+/* Dashboard */
+.dash-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: #0b2341;
+    color: #fff;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-radius: 0 0 8px 8px;
+}
+
+.dash-brand {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.dash-brand small {
+    font-weight: 400;
+    font-size: 12px;
+    opacity: 0.75;
+    display: block;
+}
+
+.dash-user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.dash-content {
+    max-width: 1100px;
+    margin: 24px auto;
+    padding: 0 20px;
+}
+
+.dash-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.dash-card {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    border: 1px solid #d0d7e2;
+}
+
+.dash-card h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: #12212f;
+    margin: 0 0 12px 0;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #e5e9f0;
+}
+
+.status-pill {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-ok {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.dash-info {
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.65;
+    margin-top: 8px;
+}
+
+.dash-info strong {
+    color: #12212f;
+}
+
+.dash-action {
+    margin-top: 12px;
+}
+
+.dash-action a {
+    color: #0055aa;
+    font-size: 13px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.dash-action a:hover {
+    text-decoration: underline;
+}
+
+/* Admin */
+.adm-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: #0b2341;
+    color: #fff;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-radius: 0 0 8px 8px;
+}
+
+.adm-brand {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.adm-brand small {
+    font-weight: 400;
+    font-size: 12px;
+    opacity: 0.75;
+    display: block;
+}
+
+.adm-content {
+    max-width: 1100px;
+    margin: 24px auto;
+    padding: 0 20px;
+}
+
+.adm-tabs {
+    display: flex;
+    gap: 0;
+    margin-bottom: 16px;
+}
+
+.adm-tab {
+    padding: 8px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #d0d7e2;
+    background: #fff;
+    color: #6b7685;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.adm-tab:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.adm-tab:last-child {
+    border-radius: 0 6px 6px 0;
+}
+
+.adm-tab.active {
+    background: #0b2341;
+    color: #fff;
+    border-color: #0b2341;
+}
+
+.adm-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 12px 16px;
+    border-radius: 8px 8px 0 0;
+    border: 1px solid #d0d7e2;
+    border-bottom: none;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.adm-search {
+    padding: 7px 12px;
+    border: 1px solid #d0d7e2;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+}
+
+.adm-filter {
+    padding: 7px 12px;
+    border: 1px solid #d0d7e2;
+    border-radius: 6px;
+    font-size: 13px;
+    font-family: inherit;
+    background: #fff;
+}
+
+.adm-table-wrap {
+    background: #fff;
+    border: 1px solid #d0d7e2;
+    border-radius: 0 0 8px 8px;
+    overflow-x: auto;
+}
+
+.adm-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+}
+
+.adm-table th {
+    text-align: left;
+    color: #6b7685;
+    font-weight: 600;
+    padding: 10px 14px;
+    border-bottom: 1px solid #d0d7e2;
+    font-size: 12px;
+    text-transform: uppercase;
+    background: #f9fbfd;
+}
+
+.adm-table td {
+    padding: 10px 14px;
+    border-bottom: 1px solid #f0f4fa;
+    color: #374151;
+}
+
+.adm-table tr:hover td {
+    background: #f9fbfd;
+}
+
+.adm-table .row-link {
+    color: #0055aa;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.adm-pagination {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 14px;
+    font-size: 12px;
+    color: #6b7685;
+}
+
+.adm-pagination button {
+    padding: 4px 12px;
+    border: 1px solid #d0d7e2;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.adm-pagination button:disabled {
+    opacity: 0.5;
+    cursor: default;
+}
+
+/* Payment */
+.pay-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 24px;
+    background: #0b2341;
+    color: #fff;
+    max-width: 1100px;
+    margin: 0 auto;
+    border-radius: 0 0 8px 8px;
+}
+
+.pay-content {
+    max-width: 720px;
+    margin: 40px auto;
+    padding: 0 20px;
+}
+
+.pay-card {
+    background: #fff;
+    border-radius: 10px;
+    border: 1px solid #d0d7e2;
+    overflow: hidden;
+}
+
+.pay-card-header {
+    background: linear-gradient(135deg, #0b2341, #243b64);
+    color: #fff;
+    padding: 24px;
+    text-align: center;
+}
+
+.pay-card-header h3 {
+    color: #fff;
+    font-size: 18px;
+    margin: 0;
+}
+
+.pay-amount {
+    font-size: 36px;
+    font-weight: 700;
+    margin-top: 8px;
+    color: #ffb547;
+}
+
+.pay-amount small {
+    font-size: 16px;
+    font-weight: 400;
+    opacity: 0.85;
+}
+
+.pay-card-body {
+    padding: 32px;
+}
+
+.pay-section {
+    margin-bottom: 28px;
+}
+
+.pay-section h4 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #12212f;
+    margin: 0 0 10px 0;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #e5e9f0;
+}
+
+.pay-section p {
+    font-size: 13px;
+    color: #4b5563;
+    line-height: 1.7;
+    margin: 0;
+}
+
+.qr-placeholder {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    background: #f9fbfd;
+    border: 1px solid #e5e9f0;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.qr-placeholder img {
+    max-width: 240px;
+    border-radius: 8px;
+}
+
+.pay-note {
+    background: #fef9e7;
+    border-left: 3px solid #ffb547;
+    padding: 12px 16px;
+    border-radius: 0 6px 6px 0;
+    font-size: 12px;
+    color: #92400e;
+    line-height: 1.6;
+}
+
+.pay-footer-actions {
+    text-align: center;
+    margin-top: 24px;
+}
+
+/* Buttons */
+.btn-gold {
+    display: inline-block;
+    padding: 10px 28px;
+    background: #ffb547;
+    color: #12212f;
+    border: none;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    text-decoration: none;
+}
+
+.btn-gold:hover {
+    background: #ff9f0f;
+}
+
+.btn-outline-sm {
+    padding: 5px 16px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 20px;
+    background: transparent;
+    color: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.btn-outline-sm:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.btn-gold-sm {
+    padding: 5px 14px;
+    background: #ffb547;
+    color: #12212f;
+    border: none;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* Loading spinner */
+.spinner {
+    display: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    margin: 0 auto;
+}
+
+.spinner.show {
+    display: inline-block;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Dash cards responsive */
+@media (max-width: 768px) {
+    .dash-cards {
+        grid-template-columns: 1fr;
+    }
+}

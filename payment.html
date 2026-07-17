@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment — IUGG-PS2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body style="background:#f4f6f8;min-height:100vh;">
+<div class="pay-topbar">
+  <div class="dash-brand">IUGG-PS2026<small>Payment</small></div>
+  <div class="dash-user-info" id="userInfo"></div>
+</div>
+
+<div class="pay-content">
+  <div class="pay-card">
+    <div class="pay-card-header">
+      <h3>Registration Fee</h3>
+      <div class="pay-amount" id="feeAmount">¥2,000 <small>CNY</small></div>
+    </div>
+    <div class="pay-card-body">
+      <div class="pay-section">
+        <h4>Payment Instructions</h4>
+        <p>
+          <em>[Payment instructions placeholder — pending content from the organizer]</em><br><br>
+          Please scan the QR code below to complete your payment.
+          After payment, we will verify and update your registration status within 1-2 business days.
+        </p>
+      </div>
+      <div class="pay-section">
+        <h4>Scan to Pay</h4>
+        <div class="qr-placeholder">
+          <img src="images/QR.jpg" alt="Payment QR Code" style="max-width:240px;">
+        </div>
+      </div>
+      <div class="pay-note">
+        &#9888; After completing payment, please keep your transaction record.
+        Your status will update after manual verification.<br>
+        After payment, please keep the transaction receipt. We will verify and update your registration status within 1-2 business days.
+      </div>
+    </div>
+  </div>
+  <div class="pay-footer-actions">
+    <a href="dashboard.html" class="btn-gold">Go to Dashboard</a>
+    <p style="font-size:12px;color:#9ca3af;margin-top:10px;">Or pay later from your dashboard</p>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+(function () {
+  if (!Auth.requireAuth()) return;
+
+  var user = Auth.getUser();
+  document.getElementById('userInfo').innerHTML =
+    '&#128100; ' + user.full_name + ' (' + user.email + ') ' +
+    '<button class="btn-outline-sm" onclick="Auth.logout()">Log Out</button>';
+
+  var feeEl = document.getElementById('feeAmount');
+  if (user.participant_type === 'student') {
+    feeEl.innerHTML = '¥1,000 <small>CNY</small>';
+  }
+})();
+</script>
+</body>
+</html>

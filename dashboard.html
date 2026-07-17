@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard — IUGG-PS2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body style="background:#f4f6f8;min-height:100vh;">
+<div class="dash-topbar">
+  <div class="dash-brand">IUGG-PS2026<small>Dashboard</small></div>
+  <div class="dash-user-info" id="userInfo"></div>
+</div>
+
+<div class="dash-content" id="dashContent" style="display:none;">
+  <div class="dash-cards">
+    <div class="dash-card" id="regCard"></div>
+    <div class="dash-card" id="payCard"></div>
+  </div>
+  <div class="dash-cards">
+    <div class="dash-card" id="profileCard"></div>
+  </div>
+</div>
+
+<div id="loading" style="text-align:center;padding:60px;color:#6b7685;">Loading...</div>
+
+<script src="js/auth.js"></script>
+<script>
+(function () {
+  if (!Auth.requireAuth()) return;
+
+  var user = Auth.getUser();
+
+  function render() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('dashContent').style.display = '';
+
+    document.getElementById('userInfo').innerHTML =
+      '&#128100; ' + user.full_name + ' (' + user.email + ') ' +
+      '<button class="btn-outline-sm" onclick="Auth.logout()">Log Out</button>';
+
+    var regCard = document.getElementById('regCard');
+    regCard.innerHTML =
+      '<h3>Registration Status</h3>' +
+      '<span class="status-pill status-ok">Registered</span>' +
+      '<div class="dash-info">' +
+      '<strong>Type:</strong> ' + (user.participant_type === 'student' ? 'Student' : 'Regular Participant') +
+      ' &nbsp;|&nbsp; <strong>Oral:</strong> ' + (user.oral_presentation ? 'Yes' : 'No') + '<br>' +
+      '<strong>Registered:</strong> ' + (user.created_at ? user.created_at.substring(0, 10) : 'N/A') +
+      '</div>';
+
+    var payStatus = user.payment_status === 'paid' ? 'status-ok' : 'status-pending';
+    var payText = user.payment_status === 'paid' ? 'Paid' : 'Pending';
+    var feeAmount = user.participant_type === 'student' ? '1,000' : '2,000';
+    var payCard = document.getElementById('payCard');
+    payCard.innerHTML =
+      '<h3>Payment Status</h3>' +
+      '<span class="status-pill ' + payStatus + '">' + payText + '</span>' +
+      '<div class="dash-info">' +
+      '<strong>Fee:</strong> ¥' + feeAmount + ' CNY &nbsp;|&nbsp; <strong>Deadline:</strong> 1 Aug 2026' +
+      '</div>' +
+      (user.payment_status !== 'paid'
+        ? '<div class="dash-action"><a href="payment.html">→ Complete Payment</a></div>'
+        : '');
+
+    var profileCard = document.getElementById('profileCard');
+    profileCard.innerHTML =
+      '<h3>Profile</h3>' +
+      '<div class="dash-info">' +
+      '<strong>Full Name:</strong> ' + user.full_name + '<br>' +
+      '<strong>Email:</strong> ' + user.email + '<br>' +
+      '<strong>Affiliation:</strong> ' + user.affiliation + '<br>' +
+      '<strong>Mobile:</strong> ' + user.mobile + '<br>' +
+      '<strong>Participant Type:</strong> ' + (user.participant_type === 'student' ? 'Student' : 'Regular Participant') + '<br>' +
+      '<strong>Oral Presentation:</strong> ' + (user.oral_presentation ? 'Yes' : 'No') + '<br>' +
+      (user.job_title ? '<strong>Job Title:</strong> ' + user.job_title + '<br>' : '') +
+      '</div>';
+  }
+
+  Auth.fetchMe().then(function (u) {
+    user = u;
+    render();
+  }).catch(function () {
+    Auth.logout();
+  });
+})();
+</script>
+</body>
+</html>

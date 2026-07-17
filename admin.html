@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin — IUGG-PS2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body style="background:#f4f6f8;min-height:100vh;">
+<div class="adm-topbar">
+  <div class="adm-brand">IUGG-PS2026<small>Admin Panel</small></div>
+  <div class="dash-user-info" id="userInfo"></div>
+</div>
+
+<div class="adm-content">
+  <div class="adm-tabs">
+    <button class="adm-tab active" data-tab="users">Users</button>
+    <button class="adm-tab" data-tab="payments">Payments</button>
+  </div>
+
+  <div id="tabUsers">
+    <div class="adm-toolbar">
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <input class="adm-search" id="searchInput" placeholder="Search name / email...">
+        <select class="adm-filter" id="filterType">
+          <option value="">All Types</option>
+          <option value="student">Students</option>
+          <option value="regular">Regular</option>
+        </select>
+        <select class="adm-filter" id="filterPayment">
+          <option value="">All Payment</option>
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
+        </select>
+      </div>
+      <button class="btn-gold-sm" onclick="exportCSV()">Export CSV</button>
+    </div>
+    <div class="adm-table-wrap">
+      <table class="adm-table">
+        <thead>
+          <tr>
+            <th>Name</th><th>Email</th><th>Affiliation</th>
+            <th>Type</th><th>Oral</th><th>Payment</th><th>Registered</th>
+          </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+      </table>
+      <div class="adm-pagination" id="pagination"></div>
+    </div>
+  </div>
+
+  <div id="tabPayments" style="display:none;">
+    <div style="background:#fff;padding:40px;border-radius:8px;border:1px solid #d0d7e2;text-align:center;color:#6b7685;">
+      Payments management coming soon.
+    </div>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script src="js/admin.js"></script>
+<script>
+(function () {
+  if (!Auth.requireAdmin()) return;
+
+  var currentPage = 1;
+  var allUsers = [];
+
+  var user = Auth.getUser();
+  document.getElementById('userInfo').innerHTML =
+    '&#128100; Admin (' + user.email + ') ' +
+    '<button class="btn-outline-sm" onclick="Auth.logout()">Log Out</button>';
+
+  document.querySelectorAll('.adm-tab').forEach(function (tab) {
+    tab.addEventListener('click', function () {
+      document.querySelectorAll('.adm-tab').forEach(function (t) { t.classList.remove('active'); });
+      tab.classList.add('active');
+      var tabId = tab.getAttribute('data-tab');
+      document.getElementById('tabUsers').style.display = tabId === 'users' ? '' : 'none';
+      document.getElementById('tabPayments').style.display = tabId === 'payments' ? '' : 'none';
+    });
+  });
+
+  function renderTable(users) {
+    var tbody = document.getElementById('userTableBody');
+    if (users.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:40px;color:#9ca3af;">No users found</td></tr>';
+      return;
+    }
+    tbody.innerHTML = users.map(function (u) {
+      var typeLabel = u.participant_type === 'student' ? 'Student' : 'Regular';
+      var payClass = u.payment_status === 'paid' ? 'status-ok' : 'status-pending';
+      var payText = u.payment_status === 'paid' ? 'Paid' : 'Pending';
+      var oralText = u.oral_presentation ? 'Yes' : 'No';
+      var created = u.created_at ? u.created_at.substring(0, 10) : '';
+      return '<tr>' +
+        '<td class="row-link" onclick="showUserDetail(' + u.id + ')">' + u.full_name + '</td>' +
+        '<td>' + u.email + '</td>' +
+        '<td>' + (u.affiliation || '') + '</td>' +
+        '<td>' + typeLabel + '</td>' +
+        '<td>' + oralText + '</td>' +
+        '<td><span class="status-pill ' + payClass + '">' + payText + '</span></td>' +
+        '<td>' + created + '</td>' +
+        '</tr>';
+    }).join('');
+  }
+
+  function renderPagination(pagination) {
+    var el = document.getElementById('pagination');
+    var from = (pagination.page - 1) * pagination.limit + 1;
+    var to = Math.min(pagination.page * pagination.limit, pagination.total);
+    el.innerHTML =
+      '<span>Showing ' + from + '-' + to + ' of ' + pagination.total + ' users</span>' +
+      '<div style="display:flex;gap:6px;">' +
+      '<button ' + (pagination.page <= 1 ? 'disabled' : '') + ' onclick="goPage(' + (pagination.page - 1) + ')">&larr; Prev</button>' +
+      '<button ' + (pagination.page >= pagination.pages ? 'disabled' : '') + ' onclick="goPage(' + (pagination.page + 1) + ')">Next &rarr;</button>' +
+      '</div>';
+  }
+
+  async function loadUsers() {
+    var params = { page: currentPage, limit: 20 };
+    var search = document.getElementById('searchInput').value.trim();
+    var type = document.getElementById('filterType').value;
+    var payment = document.getElementById('filterPayment').value;
+    if (search) params.search = search;
+    if (type) params.type = type;
+    if (payment) params.payment = payment;
+
+    try {
+      var data = await Admin.getUsers(params);
+      allUsers = data.users;
+      renderTable(data.users);
+      renderPagination(data.pagination);
+    } catch (err) {
+      document.getElementById('userTableBody').innerHTML =
+        '<tr><td colspan="7" style="text-align:center;padding:40px;color:#c00;">Failed to load users</td></tr>';
+    }
+  }
+
+  window.goPage = function (page) {
+    currentPage = page;
+    loadUsers();
+  };
+
+  window.showUserDetail = async function (id) {
+    try {
+      var data = await Admin.getUserDetail(id);
+      var u = data.user;
+      alert(
+        'Name: ' + u.full_name + '\n' +
+        'Email: ' + u.email + '\n' +
+        'Affiliation: ' + u.affiliation + '\n' +
+        'Mobile: ' + u.mobile + '\n' +
+        'Type: ' + u.participant_type + '\n' +
+        'Oral: ' + (u.oral_presentation ? 'Yes' : 'No') + '\n' +
+        'Job Title: ' + (u.job_title || 'N/A') + '\n' +
+        'Payment: ' + u.payment_status + '\n' +
+        'Registered: ' + (u.created_at ? u.created_at.substring(0, 10) : '')
+      );
+    } catch (err) {
+      alert('Failed to load user details.');
+    }
+  };
+
+  window.exportCSV = function () {
+    if (allUsers.length === 0) return;
+    var header = 'Name,Email,Affiliation,Type,Oral,Payment,Registered';
+    var rows = allUsers.map(function (u) {
+      return [
+        '"' + u.full_name + '"',
+        u.email,
+        '"' + (u.affiliation || '') + '"',
+        u.participant_type,
+        u.oral_presentation ? 'Yes' : 'No',
+        u.payment_status,
+        u.created_at ? u.created_at.substring(0, 10) : '',
+      ].join(',');
+    });
+    var csv = '\uFEFF' + header + '\n' + rows.join('\n');
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'iugg2026_users.csv';
+    a.click();
+  };
+
+  var searchTimer;
+  document.getElementById('searchInput').addEventListener('input', function () {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function () { currentPage = 1; loadUsers(); }, 300);
+  });
+  document.getElementById('filterType').addEventListener('change', function () { currentPage = 1; loadUsers(); });
+  document.getElementById('filterPayment').addEventListener('change', function () { currentPage = 1; loadUsers(); });
+
+  loadUsers();
+})();
+</script>
+</body>
+</html>
