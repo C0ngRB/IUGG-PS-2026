@@ -121,7 +121,7 @@ a:hover {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px 24px;
+    padding: 14px 12px;
     max-width: 960px;
     margin: 0 auto;
 }
@@ -589,7 +589,7 @@ a:hover {
 
     /* 头部布局：减小左右 padding */
     .header-inner {
-        padding: 10px 16px;
+        padding: 10px 12px;
     }
 
     /* 桌面导航隐藏，显示汉堡按钮 */
