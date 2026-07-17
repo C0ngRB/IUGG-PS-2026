@@ -29,8 +29,9 @@
             <a href="#contact" class="nav-link">Contact</a>
             <a href="#committees" class="nav-link">Committees</a>
             <a href="#committees" class="nav-link">Sponsors</a>
-            <a href="auth.html" class="nav-link nav-auth" id="navAuth">Log in / Register</a>
         </nav>
+
+        <a href="auth.html" class="nav-auth-btn" id="navAuth">Log in / Register</a>
 
         <!-- 移动端汉堡按钮 -->
         <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
@@ -501,6 +502,7 @@
       navAuth.textContent = label;
       navAuth.href = href;
       navAuth.title = user.email;
+      navAuth.style.borderColor = 'transparent';
     }
     var navAuthMobile = document.getElementById('navAuthMobile');
     if (navAuthMobile) {
