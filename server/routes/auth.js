@@ -178,4 +178,80 @@ router.put('/password', authenticate, async (req, res) => {
   }
 });
 
+// POST /api/auth/forgot-password
+router.post('/forgot-password', async (req, res) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return res.status(400).json({ errors: ['Email is required'] });
+    }
+
+    const [rows] = await pool.query('SELECT id, full_name FROM users WHERE email = ?', [email.toLowerCase().trim()]);
+
+    // Always return success to prevent email enumeration
+    if (rows.length === 0) {
+      return res.json({ message: 'If the email exists, a verification code has been sent.' });
+    }
+
+    const code = String(Math.floor(100000 + Math.random() * 900000));
+    const expires = new Date(Date.now() + 10 * 60 * 1000);
+
+    await pool.query('UPDATE users SET reset_code = ?, reset_code_expires = ? WHERE id = ?', [code, expires, rows[0].id]);
+
+    // TODO: Send email via SMTP when configured
+    console.log('=== PASSWORD RESET CODE ===');
+    console.log('Email: ' + email);
+    console.log('Code:  ' + code);
+    console.log('Expires: ' + expires.toISOString());
+    console.log('===========================');
+
+    res.json({ message: 'If the email exists, a verification code has been sent.' });
+  } catch (err) {
+    console.error('Forgot password error:', err);
+    res.status(500).json({ errors: ['Internal server error'] });
+  }
+});
+
+// POST /api/auth/reset-password
+router.post('/reset-password', async (req, res) => {
+  try {
+    const { email, code, new_password, confirm_password } = req.body;
+
+    const errors = [];
+    if (!email) errors.push('Email is required');
+    if (!code || code.length !== 6) errors.push('Valid 6-digit code is required');
+    if (!new_password || new_password.length < 8) errors.push('New password must be at least 8 characters');
+    if (new_password !== confirm_password) errors.push('Passwords do not match');
+
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
+
+    const [rows] = await pool.query(
+      'SELECT id, reset_code, reset_code_expires FROM users WHERE email = ?',
+      [email.toLowerCase().trim()]
+    );
+
+    if (rows.length === 0) {
+      return res.status(400).json({ errors: ['Invalid or expired verification code'] });
+    }
+
+    const user = rows[0];
+    if (!user.reset_code || user.reset_code !== code || new Date() > new Date(user.reset_code_expires)) {
+      return res.status(400).json({ errors: ['Invalid or expired verification code'] });
+    }
+
+    const hash = await bcrypt.hash(new_password, 10);
+    await pool.query(
+      'UPDATE users SET password_hash = ?, reset_code = NULL, reset_code_expires = NULL WHERE id = ?',
+      [hash, user.id]
+    );
+
+    res.json({ message: 'Password has been reset successfully. You can now log in.' });
+  } catch (err) {
+    console.error('Reset password error:', err);
+    res.status(500).json({ errors: ['Internal server error'] });
+  }
+});
+
 module.exports = router;
