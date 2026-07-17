@@ -3,9 +3,9 @@ const bcrypt = require('bcryptjs');
 const mysql = require('mysql2/promise');
 
 const ADMINS = [
-  { email: 'jgyan@whu.edu.cn',    full_name: 'Jianguo Yan' },
-  { email: 'denggaoqiu@whu.edu.cn', full_name: 'Denggao Qiu' },
-  { email: 'miaodrb@whu.edu.cn',   full_name: 'DRB Miao' },
+  { email: 'jgyan@whu.edu.cn',    full_name: 'jgyan' },
+  { email: 'denggaoqiu@whu.edu.cn', full_name: 'denggaoqiu' },
+  { email: 'miaodrb@whu.edu.cn',   full_name: 'miaodrb' },
 ];
 
 async function seed() {
