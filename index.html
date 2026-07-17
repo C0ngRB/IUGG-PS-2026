@@ -30,6 +30,7 @@
             <a href="#committees" class="nav-link">Committees</a>
             <a href="#committees" class="nav-link">Sponsors</a>
             <a href="dashboard.html" class="nav-link" id="navDashboard" style="display:none;">Dashboard</a>
+            <a href="admin.html" class="nav-link" id="navAdmin" style="display:none;">Admin</a>
         </nav>
 
         <a href="auth.html" class="nav-auth-btn" id="navAuth">Log in / Register</a>
@@ -54,6 +55,7 @@
         <a href="#committees" class="nav-link">Committees</a>
         <a href="#committees" class="nav-link">Sponsors</a>
         <a href="dashboard.html" class="nav-link" id="navDashboardMobile" style="display:none;">Dashboard</a>
+        <a href="admin.html" class="nav-link" id="navAdminMobile" style="display:none;">Admin</a>
         <a href="auth.html" class="nav-link nav-auth" id="navAuthMobile">Log in / Register</a>
     </nav>
 
@@ -510,6 +512,12 @@
     if (dashLink) {
       dashLink.style.display = '';
     }
+    if (user.role === 'admin') {
+      var adminLink = document.getElementById('navAdmin');
+      if (adminLink) {
+        adminLink.style.display = '';
+      }
+    }
     var navAuthMobile = document.getElementById('navAuthMobile');
     if (navAuthMobile) {
       navAuthMobile.textContent = displayName;
@@ -518,6 +526,12 @@
     var navDashMobile = document.getElementById('navDashboardMobile');
     if (navDashMobile) {
       navDashMobile.style.display = '';
+    }
+    if (user.role === 'admin') {
+      var navAdminMobile = document.getElementById('navAdminMobile');
+      if (navAdminMobile) {
+        navAdminMobile.style.display = '';
+      }
     }
   }
 })();
