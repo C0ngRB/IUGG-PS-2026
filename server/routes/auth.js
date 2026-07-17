@@ -4,6 +4,8 @@ const jwt = require('jsonwebtoken');
 const pool = require('../db');
 const { authenticate } = require('../middleware/auth');
 
+const { sendVerificationCode } = require('../email');
+
 const router = express.Router();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -198,12 +200,7 @@ router.post('/forgot-password', async (req, res) => {
 
     await pool.query('UPDATE users SET reset_code = ?, reset_code_expires = ? WHERE id = ?', [code, expires, rows[0].id]);
 
-    // TODO: Send email via SMTP when configured
-    console.log('=== PASSWORD RESET CODE ===');
-    console.log('Email: ' + email);
-    console.log('Code:  ' + code);
-    console.log('Expires: ' + expires.toISOString());
-    console.log('===========================');
+    await sendVerificationCode(email, code);
 
     res.json({ message: 'If the email exists, a verification code has been sent.' });
   } catch (err) {
