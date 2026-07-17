@@ -32,8 +32,8 @@ async function seed() {
     }
     await conn.query(
       `INSERT INTO users (full_name, email, password_hash, affiliation, mobile, participant_type, oral_presentation, role)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      [admin.full_name, admin.email, passwordHash, 'IUGG-PS2026', '', 'regular', 0, 'admin']
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [admin.full_name, admin.email, passwordHash, 'IUGG-PS2026', '', 'regular', 0, 'admin', 'paid']
     );
     console.log(`Admin created: ${admin.email}`);
   }

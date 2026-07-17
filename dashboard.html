@@ -53,6 +53,12 @@
     var payText = user.payment_status === 'paid' ? 'Paid' : 'Pending';
     var feeAmount = user.participant_type === 'student' ? '1,000' : '2,000';
     var payCard = document.getElementById('payCard');
+    if (user.role === 'admin') {
+      payCard.innerHTML =
+        '<h3>Payment Status</h3>' +
+        '<span class="status-pill status-ok">N/A</span>' +
+        '<div class="dash-info"><strong>Administrators do not require payment.</strong></div>';
+    } else {
     payCard.innerHTML =
       '<h3>Payment Status</h3>' +
       '<span class="status-pill ' + payStatus + '">' + payText + '</span>' +
@@ -62,6 +68,7 @@
       (user.payment_status !== 'paid'
         ? '<div class="dash-action"><a href="payment.html">→ Complete Payment</a></div>'
         : '');
+    }
 
     var profileCard = document.getElementById('profileCard');
     profileCard.innerHTML =
