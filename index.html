@@ -53,6 +53,7 @@
         <a href="#contact" class="nav-link">Contact</a>
         <a href="#committees" class="nav-link">Committees</a>
         <a href="#committees" class="nav-link">Sponsors</a>
+        <a href="dashboard.html" class="nav-link" id="navDashboardMobile" style="display:none;">Dashboard</a>
         <a href="auth.html" class="nav-link nav-auth" id="navAuthMobile">Log in / Register</a>
     </nav>
 
@@ -504,17 +505,19 @@
       navAuth.href = href;
       navAuth.title = user.email;
     }
-    // Show Dashboard link for admins
-    if (user.role === 'admin') {
-      var dashLink = document.getElementById('navDashboard');
-      if (dashLink) {
-        dashLink.style.display = '';
-      }
+    // Show Dashboard link when logged in
+    var dashLink = document.getElementById('navDashboard');
+    if (dashLink) {
+      dashLink.style.display = '';
     }
     var navAuthMobile = document.getElementById('navAuthMobile');
     if (navAuthMobile) {
-      navAuthMobile.textContent = label;
+      navAuthMobile.textContent = displayName;
       navAuthMobile.href = href;
+    }
+    var navDashMobile = document.getElementById('navDashboardMobile');
+    if (navDashMobile) {
+      navDashMobile.style.display = '';
     }
   }
 })();
