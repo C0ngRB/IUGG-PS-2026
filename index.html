@@ -495,11 +495,11 @@
 (function () {
   if (Auth.isLoggedIn()) {
     var user = Auth.getUser();
-    var label = user.role === 'admin' ? 'Admin' : 'Dashboard';
+    var displayName = (user.full_name && user.full_name.trim()) || user.email.split('@')[0];
     var href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
     var navAuth = document.getElementById('navAuth');
     if (navAuth) {
-      navAuth.textContent = label;
+      navAuth.textContent = displayName;
       navAuth.href = href;
       navAuth.title = user.email;
       navAuth.style.borderColor = 'transparent';
