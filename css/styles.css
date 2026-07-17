@@ -814,8 +814,11 @@ a:hover {
 
 .dash-content {
     max-width: 1100px;
-    margin: 24px auto;
+    margin: 0 auto;
     padding: 0 20px;
+    display: flex;
+    align-items: center;
+    min-height: calc(100vh - 80px);
 }
 
 .dash-cards {
@@ -823,6 +826,11 @@ a:hover {
     grid-template-columns: 1fr 1fr;
     gap: 16px;
     margin-bottom: 20px;
+    width: 100%;
+}
+
+.dash-cards-3 {
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .dash-card {
@@ -1226,7 +1234,7 @@ a:hover {
 
 /* Dash cards responsive */
 @media (max-width: 768px) {
-    .dash-cards {
+    .dash-cards, .dash-cards-3 {
         grid-template-columns: 1fr;
     }
 }
