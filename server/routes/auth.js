@@ -144,4 +144,38 @@ router.put('/me', authenticate, async (req, res) => {
   }
 });
 
+// PUT /api/auth/password
+router.put('/password', authenticate, async (req, res) => {
+  try {
+    const { current_password, new_password, confirm_password } = req.body;
+
+    const errors = [];
+    if (!current_password) errors.push('Current password is required');
+    if (!new_password || new_password.length < 8) errors.push('New password must be at least 8 characters');
+    if (new_password !== confirm_password) errors.push('Passwords do not match');
+
+    if (errors.length > 0) {
+      return res.status(400).json({ errors });
+    }
+
+    const [rows] = await pool.query('SELECT * FROM users WHERE id = ?', [req.user.id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ errors: ['User not found'] });
+    }
+
+    const valid = await bcrypt.compare(current_password, rows[0].password_hash);
+    if (!valid) {
+      return res.status(401).json({ errors: ['Current password is incorrect'] });
+    }
+
+    const hash = await bcrypt.hash(new_password, 10);
+    await pool.query('UPDATE users SET password_hash = ? WHERE id = ?', [hash, req.user.id]);
+
+    res.json({ message: 'Password updated successfully' });
+  } catch (err) {
+    console.error('Password change error:', err);
+    res.status(500).json({ errors: ['Internal server error'] });
+  }
+});
+
 module.exports = router;

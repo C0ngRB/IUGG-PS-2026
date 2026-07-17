@@ -81,8 +81,33 @@
       '<strong>Participant Type:</strong> ' + (user.participant_type === 'student' ? 'Student' : 'Regular Participant') + '<br>' +
       '<strong>Oral Presentation:</strong> ' + (user.oral_presentation ? 'Yes' : 'No') + '<br>' +
       (user.job_title ? '<strong>Job Title:</strong> ' + user.job_title + '<br>' : '') +
+      '<div class="dash-action"><a href="#" onclick="showChangePassword();return false;">→ Change Password</a></div>' +
       '</div>';
   }
+
+  window.showChangePassword = function () {
+    var newPw = prompt('Enter new password (at least 8 characters):');
+    if (!newPw || newPw.length < 8) {
+      if (newPw) alert('Password must be at least 8 characters.');
+      return;
+    }
+    var confirmPw = prompt('Confirm new password:');
+    if (newPw !== confirmPw) {
+      alert('Passwords do not match.');
+      return;
+    }
+    var currentPw = prompt('Enter current password:');
+    if (!currentPw) return;
+    Auth.request('PUT', '/auth/password', {
+      current_password: currentPw,
+      new_password: newPw,
+      confirm_password: confirmPw
+    }).then(function () {
+      alert('Password updated successfully!');
+    }).catch(function (err) {
+      alert(err.errors ? err.errors.join('\n') : 'Failed to change password.');
+    });
+  };
 
   Auth.fetchMe().then(function (u) {
     user = u;
