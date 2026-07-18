@@ -98,11 +98,13 @@
       var regStatus = regStatusMap[u.registration_status] || '<span class="status-pill status-pending">Pending</span>';
       var created = u.created_at ? u.created_at.substring(0, 10) : '';
       var actionBtn = '';
-      if (u.registration_status === 'pending_verification') {
-        actionBtn = '<button class="btn-gold-sm" onclick="confirmPayment(' + u.id + ')">Confirm</button>';
-      }
-      if (u.registration_status === 'pending_verification' || u.registration_status === 'registered') {
-        actionBtn += ' <button class="btn-outline-sm" style="color:#c00;border-color:#c00;" onclick="rejectPayment(' + u.id + ')">Reject</button>';
+      if (u.role !== 'admin') {
+        if (u.registration_status === 'pending_verification') {
+          actionBtn = '<button class="btn-gold-sm" onclick="confirmPayment(' + u.id + ')">Confirm</button>' +
+            ' <button class="btn-outline-sm" style="color:#c00;border-color:#c00;" onclick="rejectPayment(' + u.id + ')">Reject</button>';
+        } else if (u.registration_status === 'registered') {
+          actionBtn = '<button class="btn-outline-sm" style="color:#c00;border-color:#c00;" onclick="rejectPayment(' + u.id + ')">Reject</button>';
+        }
       }
       return '<tr>' +
         '<td>' + u.full_name + '</td>' +
