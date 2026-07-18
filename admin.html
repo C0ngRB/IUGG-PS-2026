@@ -105,6 +105,9 @@
         } else if (u.registration_status === 'registered') {
           actionBtn = '<button class="btn-outline-sm" style="color:#c00;border-color:#c00;" onclick="rejectPayment(' + u.id + ')">Reject</button>';
         }
+        if (u.receipt_path) {
+          actionBtn += ' <a href="http://localhost:3000/uploads/' + u.receipt_path + '" target="_blank" class="btn-outline-sm" style="text-decoration:none;color:#0055aa;border-color:#d0d7e2;display:inline-block;padding:4px 10px;font-size:11px;">View Receipt</a>';
+        }
       }
       return '<tr>' +
         '<td>' + u.full_name + '</td>' +

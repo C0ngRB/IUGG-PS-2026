@@ -40,7 +40,7 @@ router.get('/users', async (req, res) => {
     const [rows] = await pool.query(
       `SELECT id, full_name, email, affiliation, participant_type,
               oral_presentation, job_title, role, payment_status, registration_status,
-              transaction_id, created_at
+              transaction_id, receipt_path, created_at
        FROM users ${whereClause}
        ORDER BY created_at DESC
        LIMIT ? OFFSET ?`,
