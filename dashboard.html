@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard — IUGG-PS2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body style="background:#f4f6f8;min-height:100vh;">
+<div class="dash-topbar">
+  <a href="index.html" style="text-decoration:none;color:inherit;"><div class="dash-brand">IUGG-PS2026<small>Dashboard</small></div></a>
+  <div class="dash-user-info" id="userInfo"></div>
+</div>
+
+<div class="dash-content" id="dashContent" style="display:none;">
+  <div class="dash-cards dash-cards-3">
+    <div class="dash-card" id="statusCard"></div>
+    <div class="dash-card" id="regDetailCard"></div>
+    <div class="dash-card" id="profileCard"></div>
+  </div>
+</div>
+
+<div id="loading" style="text-align:center;padding:60px;color:#6b7685;">Loading...</div>
+
+<div style="text-align:center;padding:16px 20px;font-size:13px;color:#4b5563;line-height:1.8;max-width:1100px;margin:0 auto;">
+  <strong>Recommended Hotels 推荐酒店</strong><br>
+  君宜王朝大饭店 · 7天酒店(武汉大学广埠屯地铁站店) · 如家酒店·neo(武汉大学广埠屯地铁站店)<br>
+  锦江之星品尚(武汉大学广埠屯地铁站店) · 全季酒店(武汉大学街道口地铁站店)
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+(function () {
+  if (!Auth.requireAuth()) return;
+
+  var user = Auth.getUser();
+  var typeLabel = { student: 'Student', regular: 'Regular Participant', accompanying: 'Accompanying Person' };
+  var feeMap = { student: '1,000', regular: '2,000', accompanying: '800' };
+
+  function render() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('dashContent').style.display = '';
+
+    document.getElementById('userInfo').innerHTML =
+      '&#128100; ' + user.full_name + ' (' + user.email + ') ' +
+      '<button class="btn-outline-sm" onclick="Auth.logout()">Log Out</button>';
+
+    var regId = 'IUGG2026-' + String(user.id).padStart(4, '0');
+    var regStatus = user.registration_status || 'pending_payment';
+    var statusMap = {
+      pending_payment:    { cls: 'status-pending', text: 'Pending Payment' },
+      pending_verification: { cls: 'status-pending', text: 'Awaiting Verification' },
+      registered:           { cls: 'status-ok',      text: 'Registered' },
+      rejected:             { cls: 'status-pending', text: 'Rejected' },
+    };
+    var st = statusMap[regStatus] || statusMap.pending_payment;
+
+    var statusCard = document.getElementById('statusCard');
+    statusCard.innerHTML =
+      '<h3>Registration Status</h3>' +
+      '<span class="status-pill ' + st.cls + '">' + st.text + '</span>' +
+      '<div class="dash-info" style="margin-top:10px;">' +
+      '<strong>Registration ID:</strong> ' + regId + '<br>' +
+      (regStatus === 'pending_payment'
+        ? '<div class="dash-action"><a href="payment.html">→ Go to Payment</a></div>'
+        : '') +
+      '</div>';
+
+    var regDetailCard = document.getElementById('regDetailCard');
+    regDetailCard.innerHTML =
+      '<h3>Registration Details</h3>' +
+      '<div class="dash-info">' +
+      '<strong>Type:</strong> ' + typeLabel[user.participant_type] + '<br>' +
+      '<strong>Oral:</strong> ' + (user.oral_presentation ? 'Yes' : 'No') + '<br>' +
+      '<strong>Fee:</strong> ¥' + feeMap[user.participant_type] + ' CNY<br>' +
+      '<strong>Registered:</strong> ' + (user.created_at ? user.created_at.substring(0, 10) : 'N/A') +
+      '</div>';
+
+    var profileCard = document.getElementById('profileCard');
+    profileCard.innerHTML =
+      '<h3>Profile</h3>' +
+      '<div class="dash-info">' +
+      '<strong>Full Name:</strong> ' + user.full_name + '<br>' +
+      '<strong>Email:</strong> ' + user.email + '<br>' +
+      '<strong>Affiliation:</strong> ' + user.affiliation + '<br>' +
+      '<strong>Mobile:</strong> ' + user.mobile + '<br>' +
+      '<strong>Participant Type:</strong> ' + typeLabel[user.participant_type] + '<br>' +
+      '<strong>Oral Presentation:</strong> ' + (user.oral_presentation ? 'Yes' : 'No') + '<br>' +
+      (user.job_title ? '<strong>Job Title:</strong> ' + user.job_title + '<br>' : '') +
+      '<div class="dash-action"><a href="change-password.html">→ Change Password</a></div>' +
+      '</div>';
+  }
+
+  Auth.fetchMe().then(function (u) {
+    user = u;
+    render();
+  }).catch(function () {
+    Auth.logout();
+  });
+})();
+</script>
+</body>
+</html>

@@ -29,7 +29,11 @@
             <a href="#contact" class="nav-link">Contact</a>
             <a href="#committees" class="nav-link">Committees</a>
             <a href="#committees" class="nav-link">Sponsors</a>
+            <a href="dashboard.html" class="nav-link" id="navDashboard" style="display:none;">Dashboard</a>
+            <a href="admin.html" class="nav-link" id="navAdmin" style="display:none;">Admin</a>
         </nav>
+
+        <a href="auth.html" class="nav-auth-btn" id="navAuth">Log in / Register</a>
 
         <!-- 移动端汉堡按钮 -->
         <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
@@ -50,6 +54,9 @@
         <a href="#contact" class="nav-link">Contact</a>
         <a href="#committees" class="nav-link">Committees</a>
         <a href="#committees" class="nav-link">Sponsors</a>
+        <a href="dashboard.html" class="nav-link" id="navDashboardMobile" style="display:none;">Dashboard</a>
+        <a href="admin.html" class="nav-link" id="navAdminMobile" style="display:none;">Admin</a>
+        <a href="auth.html" class="nav-link nav-auth" id="navAuthMobile">Log in / Register</a>
     </nav>
 
     <!-- 抽屉遮罩层：点击关闭 -->
@@ -487,6 +494,48 @@
 </footer>
 
 <script src="script.js"></script>
+<script src="js/auth.js"></script>
+<script>
+(function () {
+  if (Auth.isLoggedIn()) {
+    var user = Auth.getUser();
+    var displayName = (user.full_name && user.full_name.trim()) || user.email.split('@')[0];
+    var href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
+    var navAuth = document.getElementById('navAuth');
+    if (navAuth) {
+      navAuth.textContent = displayName;
+      navAuth.href = href;
+      navAuth.title = user.email;
+    }
+    // Show Dashboard link when logged in
+    var dashLink = document.getElementById('navDashboard');
+    if (dashLink) {
+      dashLink.style.display = '';
+    }
+    if (user.role === 'admin') {
+      var adminLink = document.getElementById('navAdmin');
+      if (adminLink) {
+        adminLink.style.display = '';
+      }
+    }
+    var navAuthMobile = document.getElementById('navAuthMobile');
+    if (navAuthMobile) {
+      navAuthMobile.textContent = displayName;
+      navAuthMobile.href = href;
+    }
+    var navDashMobile = document.getElementById('navDashboardMobile');
+    if (navDashMobile) {
+      navDashMobile.style.display = '';
+    }
+    if (user.role === 'admin') {
+      var navAdminMobile = document.getElementById('navAdminMobile');
+      if (navAdminMobile) {
+        navAdminMobile.style.display = '';
+      }
+    }
+  }
+})();
+</script>
 </body>
 </html>
 

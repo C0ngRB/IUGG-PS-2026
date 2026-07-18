@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Payment — IUGG-PS2026</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body style="background:#f4f6f8;min-height:100vh;">
+<div class="pay-topbar">
+  <a href="index.html" style="text-decoration:none;color:inherit;"><div class="dash-brand">IUGG-PS2026<small>Payment</small></div></a>
+  <div class="dash-user-info" id="userInfo"></div>
+</div>
+
+<div class="pay-content">
+  <div class="pay-card">
+    <div class="pay-card-header">
+      <h3>Registration Fee</h3>
+      <div class="pay-amount" id="feeAmount">¥2,000 <small>CNY</small></div>
+      <div style="font-size:13px;opacity:0.8;margin-top:6px;">
+        Registration ID: <strong id="regId">—</strong>
+      </div>
+    </div>
+    <div class="pay-card-body">
+      <div class="pay-section">
+        <h4>Registration Fees</h4>
+        <table class="fee-table">
+          <thead><tr><th>Category</th><th>Fee (CNY)</th></tr></thead>
+          <tbody>
+            <tr class="fee-row" data-type="regular"><td>Regular</td><td>2,000</td></tr>
+            <tr class="fee-row" data-type="student"><td>Student</td><td>1,000</td></tr>
+            <tr class="fee-row" data-type="accompanying"><td>Accompanying Person</td><td>800</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pay-section">
+        <h4>Scan to Pay</h4>
+        <div class="qr-placeholder">
+          <img src="images/QR.jpg" alt="Payment QR Code" style="max-width:240px;">
+        </div>
+      </div>
+
+      <!-- Payment submission form -->
+      <div class="pay-section" id="submitSection">
+        <h4>Submit Payment Confirmation</h4>
+        <p style="font-size:13px;color:#4b5563;margin-bottom:12px;">
+          After completing your payment, please upload the electronic receipt from the payment platform.
+        </p>
+        <div class="form-group">
+          <label>Upload Electronic Receipt</label>
+          <div class="form-hint" style="margin-bottom:6px;">Screenshot or PDF of successful payment receipt</div>
+          <input type="file" id="receiptFile" accept="image/*,.pdf" style="display:none;" onchange="updateFileLabel()">
+          <button type="button" class="btn-outline-sm" style="color:#0b2341;border-color:#d0d7e2;" onclick="document.getElementById('receiptFile').click()">Choose File</button>
+          <span id="fileLabel" style="font-size:12px;color:#6b7685;margin-left:8px;">No file chosen</span>
+          <div id="uploadStatus" style="font-size:12px;color:#6b7685;margin-top:4px;"></div>
+        </div>
+        <button class="btn-gold" style="width:100%" id="submitBtn" onclick="submitPayment()">Submit Payment Confirmation</button>
+        <div class="form-errors" id="submitErrors" style="margin-top:10px;"></div>
+      </div>
+
+      <div id="submittedMsg" style="display:none;padding:16px;background:#f0fdf4;border-radius:8px;border:1px solid #86efac;text-align:center;">
+        <p style="color:#065f46;margin:0;">Payment info submitted. Awaiting admin verification.</p>
+      </div>
+
+      <div class="pay-note">
+        Your payment will be verified by our staff. Status updates in Dashboard after confirmation.
+      </div>
+    </div>
+  </div>
+  <div class="pay-footer-actions">
+    <a href="dashboard.html" class="btn-gold">Back to Dashboard</a>
+  </div>
+</div>
+
+<script src="js/auth.js"></script>
+<script>
+(function () {
+  if (!Auth.requireAuth()) return;
+
+  var user = Auth.getUser();
+  var regId = 'IUGG2026-' + String(user.id).padStart(4, '0');
+
+  document.getElementById('userInfo').innerHTML =
+    '&#128100; ' + user.full_name + ' (' + user.email + ') ' +
+    '<button class="btn-outline-sm" onclick="Auth.logout()">Log Out</button>';
+
+  document.getElementById('regId').textContent = regId;
+
+  var feeMap = { student: '1,000', regular: '2,000', accompanying: '800' };
+  var feeLabel = feeMap[user.participant_type] || '2,000';
+  document.getElementById('feeAmount').innerHTML = '¥' + feeLabel + ' <small>CNY</small>';
+
+  document.querySelectorAll('.fee-row').forEach(function (row) {
+    if (row.getAttribute('data-type') === user.participant_type) {
+      row.style.background = '#fef9e7';
+      row.style.fontWeight = '600';
+    }
+  });
+
+  // Hide submit if already submitted or verified
+  if (user.registration_status && user.registration_status !== 'pending_payment') {
+    document.getElementById('submitSection').style.display = 'none';
+    document.getElementById('submittedMsg').style.display = '';
+  }
+
+  window.updateFileLabel = function () {
+    var f = document.getElementById('receiptFile');
+    var label = document.getElementById('fileLabel');
+    label.textContent = f.files.length > 0 ? f.files[0].name : 'No file chosen';
+  };
+
+  window.submitPayment = async function () {
+    var errors = document.getElementById('submitErrors');
+    errors.innerHTML = '';
+    var file = document.getElementById('receiptFile').files[0];
+
+    if (!file) {
+      errors.innerHTML = '<div>Please upload your electronic payment receipt.</div>';
+      return;
+    }
+
+    var btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting...';
+
+    try {
+      var formData = new FormData();
+      formData.append('receipt', file);
+      var uploadRes = await fetch('http://localhost:3000/api/auth/upload-receipt', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + Auth.getToken() },
+        body: formData,
+      });
+      var uploadData = await uploadRes.json();
+      if (!uploadRes.ok) throw uploadData;
+
+      await Auth.request('PUT', '/auth/payment-submit', {});
+      document.getElementById('submitSection').style.display = 'none';
+      document.getElementById('submittedMsg').style.display = '';
+    } catch (err) {
+      var msgs = err.errors || ['Submission failed'];
+      errors.innerHTML = msgs.map(function (m) { return '<div>' + m + '</div>'; }).join('');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Submit Payment Confirmation';
+  };
+})();
+</script>
+</body>
+</html>
