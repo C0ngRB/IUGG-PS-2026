@@ -173,7 +173,23 @@
   };
 
   window.confirmPayment = async function (id) {
-    if (!confirm('Confirm payment for this user?')) return;
+    // Find user data
+    var u = null;
+    for (var i = 0; i < allUsers.length; i++) {
+      if (allUsers[i].id === id) { u = allUsers[i]; break; }
+    }
+    if (!u) return;
+    var typeLabel = u.participant_type === 'student' ? 'Student' : u.participant_type === 'accompanying' ? 'Accompanying' : 'Regular';
+    var feeMap = { student: '1,000', regular: '2,000', accompanying: '800' };
+    var msg = 'Confirm payment for:\n\n' +
+      'Name: ' + u.full_name + '\n' +
+      'Email: ' + u.email + '\n' +
+      'Type: ' + typeLabel + '\n' +
+      'Fee: ¥' + feeMap[u.participant_type] + '\n' +
+      'Transaction: ' + (u.transaction_id || 'N/A') + '\n\n' +
+      'This will mark the user as REGISTERED. Continue?';
+    if (!confirm(msg)) return;
+    if (!confirm('FINAL confirmation: Mark this user as registered?')) return;
     try {
       await Auth.request('PUT', '/admin/users/' + id + '/confirm-payment');
       loadUsers();
@@ -181,7 +197,17 @@
   };
 
   window.rejectPayment = async function (id) {
-    if (!confirm('Reject payment for this user?')) return;
+    var u = null;
+    for (var i = 0; i < allUsers.length; i++) {
+      if (allUsers[i].id === id) { u = allUsers[i]; break; }
+    }
+    if (!u) return;
+    var msg = 'Reject payment for:\n\n' +
+      'Name: ' + u.full_name + '\n' +
+      'Email: ' + u.email + '\n\n' +
+      'This will mark the user as REJECTED. Continue?';
+    if (!confirm(msg)) return;
+    if (!confirm('FINAL confirmation: Mark this user as rejected?')) return;
     try {
       await Auth.request('PUT', '/admin/users/' + id + '/reject-payment');
       loadUsers();
