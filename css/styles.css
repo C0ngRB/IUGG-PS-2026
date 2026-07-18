@@ -7,7 +7,7 @@
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", sans-serif;
-    line-height: 1.5;
+    line-height: 1.4;
     color: #1b2733;
     background-color: #f4f6f8;
 }
@@ -815,10 +815,10 @@ a:hover {
 .dash-content {
     max-width: 1100px;
     margin: 0 auto;
-    padding: 0 20px;
+    padding: 16px 20px;
     display: flex;
     align-items: center;
-    min-height: calc(100vh - 80px);
+    min-height: calc(100vh - 140px);
 }
 
 .dash-cards {
