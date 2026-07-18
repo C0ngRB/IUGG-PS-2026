@@ -1,4 +1,4 @@
-var API_BASE = 'http://localhost:3000/api';
+var API_BASE = 'http://8.148.64.89:3000/api';
 
 var Auth = {
   getToken: function () {

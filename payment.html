@@ -126,7 +126,7 @@
     try {
       var formData = new FormData();
       formData.append('receipt', file);
-      var uploadRes = await fetch('http://localhost:3000/api/auth/upload-receipt', {
+      var uploadRes = await fetch(API_BASE + '/auth/upload-receipt', {
         method: 'POST',
         headers: { 'Authorization': 'Bearer ' + Auth.getToken() },
         body: formData,
