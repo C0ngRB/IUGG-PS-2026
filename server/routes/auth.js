@@ -38,7 +38,7 @@ router.post('/register', async (req, res) => {
     if (password !== confirm_password) errors.push('Passwords do not match');
     if (!affiliation || !affiliation.trim()) errors.push('Affiliation is required');
     if (!mobile || !mobile.trim()) errors.push('Mobile number is required');
-    if (!['student', 'regular'].includes(participant_type)) errors.push('Participant type is required');
+    if (!['student', 'regular', 'accompanying'].includes(participant_type)) errors.push('Participant type is required');
     if (oral_presentation === undefined || oral_presentation === null || oral_presentation === '') {
       errors.push('Oral presentation selection is required');
     }

@@ -26,6 +26,7 @@
           <option value="">All Types</option>
           <option value="student">Students</option>
           <option value="regular">Regular</option>
+          <option value="accompanying">Accompanying</option>
         </select>
         <select class="adm-filter" id="filterPayment">
           <option value="">All Payment</option>
@@ -87,7 +88,7 @@
       return;
     }
     tbody.innerHTML = users.map(function (u) {
-      var typeLabel = u.participant_type === 'student' ? 'Student' : 'Regular';
+      var typeLabel = u.participant_type === 'student' ? 'Student' : u.participant_type === 'accompanying' ? 'Accompany' : 'Regular';
       var payClass = u.payment_status === 'paid' ? 'status-ok' : 'status-pending';
       var payText = u.payment_status === 'paid' ? 'Paid' : 'Pending';
       var oralText = u.oral_presentation ? 'Yes' : 'No';

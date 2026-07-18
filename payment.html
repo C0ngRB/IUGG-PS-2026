@@ -20,6 +20,19 @@
     </div>
     <div class="pay-card-body">
       <div class="pay-section">
+        <h4>Registration Fees 注册费</h4>
+        <table class="fee-table">
+          <thead>
+            <tr><th>Category</th><th>Fee (CNY)</th></tr>
+          </thead>
+          <tbody>
+            <tr class="fee-row" data-type="regular"><td>Regular 在职人员</td><td>2,000</td></tr>
+            <tr class="fee-row" data-type="student"><td>Student 学生</td><td>1,000</td></tr>
+            <tr class="fee-row" data-type="accompanying"><td>Accompanying Person 随行人员</td><td>800</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pay-section">
         <h4>Payment Instructions</h4>
         <p>
           <em>[Payment instructions placeholder — pending content from the organizer]</em><br><br>
@@ -66,9 +79,18 @@
     '<button class="btn-outline-sm" onclick="Auth.logout()">Log Out</button>';
 
   var feeEl = document.getElementById('feeAmount');
-  if (user.participant_type === 'student') {
-    feeEl.innerHTML = '¥1,000 <small>CNY</small>';
-  }
+  var feeMap = { student: '¥1,000', regular: '¥2,000', accompanying: '¥800' };
+  var feeLabel = feeMap[user.participant_type] || '¥2,000';
+  feeEl.innerHTML = feeLabel + ' <small>CNY</small>';
+
+  // Highlight the user's category in the fee table
+  document.querySelectorAll('.fee-row').forEach(function (row) {
+    if (row.getAttribute('data-type') === user.participant_type) {
+      row.style.background = '#fef9e7';
+      row.style.fontWeight = '600';
+    }
+  });
+
   document.getElementById('refName').textContent = user.full_name;
   document.getElementById('refEmail').textContent = user.email;
 })();

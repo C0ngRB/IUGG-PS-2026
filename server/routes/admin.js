@@ -22,7 +22,7 @@ router.get('/users', async (req, res) => {
       const s = `%${req.query.search}%`;
       params.push(s, s);
     }
-    if (req.query.type && ['student', 'regular'].includes(req.query.type)) {
+    if (req.query.type && ['student', 'regular', 'accompanying'].includes(req.query.type)) {
       where.push('participant_type = ?');
       params.push(req.query.type);
     }

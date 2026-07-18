@@ -42,14 +42,13 @@
       '<h3>Registration Status</h3>' +
       '<span class="status-pill status-ok">Registered</span>' +
       '<div class="dash-info">' +
-      '<strong>Type:</strong> ' + (user.participant_type === 'student' ? 'Student' : 'Regular Participant') +
+      '<strong>Type:</strong> ' + typeLabel[user.participant_type] +
       ' &nbsp;|&nbsp; <strong>Oral:</strong> ' + (user.oral_presentation ? 'Yes' : 'No') + '<br>' +
       '<strong>Registered:</strong> ' + (user.created_at ? user.created_at.substring(0, 10) : 'N/A') +
       '</div>';
 
-    var payStatus = user.payment_status === 'paid' ? 'status-ok' : 'status-pending';
-    var payText = user.payment_status === 'paid' ? 'Paid' : 'Pending';
-    var feeAmount = user.participant_type === 'student' ? '1,000' : '2,000';
+    var typeLabel = { student: 'Student', regular: 'Regular Participant', accompanying: 'Accompanying Person' };
+    var feeMap = { student: '1,000', regular: '2,000', accompanying: '800' };
     var payCard = document.getElementById('payCard');
     if (user.role === 'admin') {
       payCard.innerHTML =
@@ -61,7 +60,7 @@
       '<h3>Payment Status</h3>' +
       '<span class="status-pill ' + payStatus + '">' + payText + '</span>' +
       '<div class="dash-info">' +
-      '<strong>Fee:</strong> ¥' + feeAmount + ' CNY &nbsp;|&nbsp; <strong>Deadline:</strong> 1 Aug 2026' +
+      '<strong>Fee:</strong> ¥' + feeMap[user.participant_type] + ' CNY &nbsp;|&nbsp; <strong>Deadline:</strong> 1 Aug 2026' +
       '</div>' +
       (user.payment_status !== 'paid'
         ? '<div class="dash-action"><a href="payment.html">→ Complete Payment</a></div>'
@@ -76,7 +75,7 @@
       '<strong>Email:</strong> ' + user.email + '<br>' +
       '<strong>Affiliation:</strong> ' + user.affiliation + '<br>' +
       '<strong>Mobile:</strong> ' + user.mobile + '<br>' +
-      '<strong>Participant Type:</strong> ' + (user.participant_type === 'student' ? 'Student' : 'Regular Participant') + '<br>' +
+      '<strong>Participant Type:</strong> ' + typeLabel[user.participant_type] + '<br>' +
       '<strong>Oral Presentation:</strong> ' + (user.oral_presentation ? 'Yes' : 'No') + '<br>' +
       (user.job_title ? '<strong>Job Title:</strong> ' + user.job_title + '<br>' : '') +
       '<div class="dash-action"><a href="change-password.html">→ Change Password</a></div>' +

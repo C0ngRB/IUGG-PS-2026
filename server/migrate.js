@@ -9,7 +9,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash VARCHAR(255) NOT NULL,
   affiliation VARCHAR(300) NOT NULL,
   mobile VARCHAR(30) NOT NULL,
-  participant_type ENUM('student','regular') NOT NULL,
+  participant_type ENUM('student','regular','accompanying') NOT NULL,
   oral_presentation TINYINT(1) NOT NULL,
   job_title VARCHAR(100) NULL,
   role ENUM('user','admin') DEFAULT 'user',
