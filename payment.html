@@ -42,23 +42,19 @@
 
       <!-- Payment submission form -->
       <div class="pay-section" id="submitSection">
-        <h4>Submit Payment Info</h4>
+        <h4>Submit Payment Confirmation</h4>
         <p style="font-size:13px;color:#4b5563;margin-bottom:12px;">
-          After completing your payment, please enter the transaction number or upload a screenshot of the payment receipt.
+          After completing your payment, please upload the electronic receipt from the payment platform.
         </p>
         <div class="form-group">
-          <label>Transaction / Reference Number</label>
-          <input type="text" id="transactionId" placeholder="From your payment confirmation">
-        </div>
-        <div class="form-group">
-          <label>Upload Payment Receipt (optional)</label>
-          <div class="form-hint" style="margin-bottom:6px;">Screenshot of successful payment from the payment platform</div>
+          <label>Upload Electronic Receipt</label>
+          <div class="form-hint" style="margin-bottom:6px;">Screenshot or PDF of successful payment receipt</div>
           <input type="file" id="receiptFile" accept="image/*,.pdf" style="display:none;" onchange="updateFileLabel()">
           <button type="button" class="btn-outline-sm" style="color:#0b2341;border-color:#d0d7e2;" onclick="document.getElementById('receiptFile').click()">Choose File</button>
           <span id="fileLabel" style="font-size:12px;color:#6b7685;margin-left:8px;">No file chosen</span>
           <div id="uploadStatus" style="font-size:12px;color:#6b7685;margin-top:4px;"></div>
         </div>
-        <button class="btn-gold" style="width:100%" id="submitBtn" onclick="submitPayment()">Submit Payment Info</button>
+        <button class="btn-gold" style="width:100%" id="submitBtn" onclick="submitPayment()">Submit Payment Confirmation</button>
         <div class="form-errors" id="submitErrors" style="margin-top:10px;"></div>
       </div>
 
@@ -116,11 +112,10 @@
   window.submitPayment = async function () {
     var errors = document.getElementById('submitErrors');
     errors.innerHTML = '';
-    var transactionId = document.getElementById('transactionId').value.trim();
     var file = document.getElementById('receiptFile').files[0];
 
-    if (!transactionId && !file) {
-      errors.innerHTML = '<div>Please enter a transaction number or upload a receipt.</div>';
+    if (!file) {
+      errors.innerHTML = '<div>Please upload your electronic payment receipt.</div>';
       return;
     }
 
@@ -129,33 +124,25 @@
     btn.textContent = 'Submitting...';
 
     try {
-      // Upload receipt if file selected
-      if (file) {
-        var formData = new FormData();
-        formData.append('receipt', file);
-        var uploadRes = await fetch('http://localhost:3000/api/auth/upload-receipt', {
-          method: 'POST',
-          headers: { 'Authorization': 'Bearer ' + Auth.getToken() },
-          body: formData,
-        });
-        var uploadData = await uploadRes.json();
-        if (!uploadRes.ok) throw uploadData;
-        document.getElementById('uploadStatus').textContent = 'Receipt uploaded.';
-      }
+      var formData = new FormData();
+      formData.append('receipt', file);
+      var uploadRes = await fetch('http://localhost:3000/api/auth/upload-receipt', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + Auth.getToken() },
+        body: formData,
+      });
+      var uploadData = await uploadRes.json();
+      if (!uploadRes.ok) throw uploadData;
 
-      // Submit payment info
-      await Auth.request('PUT', '/auth/payment-submit', { transaction_id: transactionId || null });
+      await Auth.request('PUT', '/auth/payment-submit', {});
       document.getElementById('submitSection').style.display = 'none';
       document.getElementById('submittedMsg').style.display = '';
-      document.getElementById('submittedMsg').innerHTML =
-        '<p style="color:#065f46;margin:0;">Payment info submitted. Awaiting admin verification.</p>' +
-        '<p style="font-size:12px;color:#6b7685;margin:8px 0 0 0;">You can close this page.</p>';
     } catch (err) {
       var msgs = err.errors || ['Submission failed'];
       errors.innerHTML = msgs.map(function (m) { return '<div>' + m + '</div>'; }).join('');
     }
     btn.disabled = false;
-    btn.textContent = 'Submit Payment Info';
+    btn.textContent = 'Submit Payment Confirmation';
   };
 })();
 </script>
