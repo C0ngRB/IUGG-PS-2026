@@ -40,8 +40,8 @@
       <table class="adm-table">
         <thead>
           <tr>
-            <th>Name</th><th>Email</th><th>Affiliation</th>
-            <th>Type</th><th>Oral</th><th>Payment</th><th>Registered</th>
+            <th>Name</th><th>Email</th><th>Type</th>
+            <th>Reg Status</th><th>Transaction</th><th>Registered</th><th></th>
           </tr>
         </thead>
         <tbody id="userTableBody"></tbody>
@@ -89,18 +89,29 @@
     }
     tbody.innerHTML = users.map(function (u) {
       var typeLabel = u.participant_type === 'student' ? 'Student' : u.participant_type === 'accompanying' ? 'Accompany' : 'Regular';
-      var payClass = u.payment_status === 'paid' ? 'status-ok' : 'status-pending';
-      var payText = u.payment_status === 'paid' ? 'Paid' : 'Pending';
-      var oralText = u.oral_presentation ? 'Yes' : 'No';
+      var regStatusMap = {
+        pending_payment: '<span class="status-pill status-pending">Pending</span>',
+        pending_verification: '<span class="status-pill status-pending">Verifying</span>',
+        registered: '<span class="status-pill status-ok">Registered</span>',
+        rejected: '<span class="status-pill status-pending">Rejected</span>',
+      };
+      var regStatus = regStatusMap[u.registration_status] || '<span class="status-pill status-pending">Pending</span>';
       var created = u.created_at ? u.created_at.substring(0, 10) : '';
+      var actionBtn = '';
+      if (u.registration_status === 'pending_verification') {
+        actionBtn = '<button class="btn-gold-sm" onclick="confirmPayment(' + u.id + ')">Confirm</button>';
+      }
+      if (u.registration_status === 'pending_verification' || u.registration_status === 'registered') {
+        actionBtn += ' <button class="btn-outline-sm" style="color:#c00;border-color:#c00;" onclick="rejectPayment(' + u.id + ')">Reject</button>';
+      }
       return '<tr>' +
-        '<td class="row-link" onclick="showUserDetail(' + u.id + ')">' + u.full_name + '</td>' +
+        '<td>' + u.full_name + '</td>' +
         '<td>' + u.email + '</td>' +
-        '<td>' + (u.affiliation || '') + '</td>' +
         '<td>' + typeLabel + '</td>' +
-        '<td>' + oralText + '</td>' +
-        '<td><span class="status-pill ' + payClass + '">' + payText + '</span></td>' +
+        '<td>' + regStatus + '</td>' +
+        '<td style="font-size:11px;">' + (u.transaction_id || '—') + '</td>' +
         '<td>' + created + '</td>' +
+        '<td>' + actionBtn + '</td>' +
         '</tr>';
     }).join('');
   }
@@ -142,37 +153,13 @@
     loadUsers();
   };
 
-  window.showUserDetail = async function (id) {
-    try {
-      var data = await Admin.getUserDetail(id);
-      var u = data.user;
-      alert(
-        'Name: ' + u.full_name + '\n' +
-        'Email: ' + u.email + '\n' +
-        'Affiliation: ' + u.affiliation + '\n' +
-        'Mobile: ' + u.mobile + '\n' +
-        'Type: ' + u.participant_type + '\n' +
-        'Oral: ' + (u.oral_presentation ? 'Yes' : 'No') + '\n' +
-        'Job Title: ' + (u.job_title || 'N/A') + '\n' +
-        'Payment: ' + u.payment_status + '\n' +
-        'Registered: ' + (u.created_at ? u.created_at.substring(0, 10) : '')
-      );
-    } catch (err) {
-      alert('Failed to load user details.');
-    }
-  };
-
   window.exportCSV = function () {
     if (allUsers.length === 0) return;
-    var header = 'Name,Email,Affiliation,Type,Oral,Payment,Registered';
+    var header = 'Name,Email,Type,RegStatus,Transaction,Registered';
     var rows = allUsers.map(function (u) {
       return [
-        '"' + u.full_name + '"',
-        u.email,
-        '"' + (u.affiliation || '') + '"',
-        u.participant_type,
-        u.oral_presentation ? 'Yes' : 'No',
-        u.payment_status,
+        '"' + u.full_name + '"', u.email, u.participant_type,
+        u.registration_status || '', u.transaction_id || '',
         u.created_at ? u.created_at.substring(0, 10) : '',
       ].join(',');
     });
@@ -183,6 +170,22 @@
     a.href = url;
     a.download = 'iugg2026_users.csv';
     a.click();
+  };
+
+  window.confirmPayment = async function (id) {
+    if (!confirm('Confirm payment for this user?')) return;
+    try {
+      await Auth.request('PUT', '/admin/users/' + id + '/confirm-payment');
+      loadUsers();
+    } catch (err) { alert('Failed'); }
+  };
+
+  window.rejectPayment = async function (id) {
+    if (!confirm('Reject payment for this user?')) return;
+    try {
+      await Auth.request('PUT', '/admin/users/' + id + '/reject-payment');
+      loadUsers();
+    } catch (err) { alert('Failed'); }
   };
 
   var searchTimer;

@@ -4,11 +4,22 @@ const jwt = require('jsonwebtoken');
 const pool = require('../db');
 const { authenticate } = require('../middleware/auth');
 
+const multer = require('multer');
+const path = require('path');
 const { sendVerificationCode } = require('../email');
 
 const router = express.Router();
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+// File upload setup
+const storage = multer.diskStorage({
+  destination: 'uploads/',
+  filename: function (_req, file, cb) {
+    cb(null, Date.now() + '-' + Math.round(Math.random() * 1e9) + path.extname(file.originalname));
+  },
+});
+const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } });
 
 function signToken(user) {
   return jwt.sign(
@@ -142,6 +153,47 @@ router.put('/me', authenticate, async (req, res) => {
     res.json({ user: sanitizeUser(rows[0]) });
   } catch (err) {
     console.error('Update error:', err);
+    res.status(500).json({ errors: ['Internal server error'] });
+  }
+});
+
+// POST /api/auth/upload-receipt
+router.post('/upload-receipt', authenticate, upload.single('receipt'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ errors: ['No file uploaded'] });
+    }
+    await pool.query('UPDATE users SET receipt_path = ? WHERE id = ?', [req.file.filename, req.user.id]);
+    res.json({ receipt_path: req.file.filename });
+  } catch (err) {
+    console.error('Upload error:', err);
+    res.status(500).json({ errors: ['Internal server error'] });
+  }
+});
+
+// PUT /api/auth/payment-submit
+router.put('/payment-submit', authenticate, async (req, res) => {
+  try {
+    const { transaction_id } = req.body;
+
+    const [rows] = await pool.query('SELECT id, registration_status FROM users WHERE id = ?', [req.user.id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ errors: ['User not found'] });
+    }
+
+    if (rows[0].registration_status !== 'pending_payment') {
+      return res.status(400).json({ errors: ['Payment already submitted or verified'] });
+    }
+
+    await pool.query(
+      'UPDATE users SET transaction_id = ?, registration_status = ? WHERE id = ?',
+      [transaction_id || null, 'pending_verification', req.user.id]
+    );
+
+    const [updated] = await pool.query('SELECT * FROM users WHERE id = ?', [req.user.id]);
+    res.json({ user: sanitizeUser(updated[0]) });
+  } catch (err) {
+    console.error('Payment submit error:', err);
     res.status(500).json({ errors: ['Internal server error'] });
   }
 });

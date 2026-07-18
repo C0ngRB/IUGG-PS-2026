@@ -39,7 +39,8 @@ router.get('/users', async (req, res) => {
 
     const [rows] = await pool.query(
       `SELECT id, full_name, email, affiliation, participant_type,
-              oral_presentation, job_title, role, payment_status, created_at
+              oral_presentation, job_title, role, payment_status, registration_status,
+              transaction_id, created_at
        FROM users ${whereClause}
        ORDER BY created_at DESC
        LIMIT ? OFFSET ?`,
@@ -61,7 +62,8 @@ router.get('/users/:id', async (req, res) => {
   try {
     const [rows] = await pool.query(
       `SELECT id, full_name, email, affiliation, mobile, participant_type,
-              oral_presentation, job_title, role, payment_status, created_at, updated_at
+              oral_presentation, job_title, role, payment_status, registration_status,
+              transaction_id, receipt_path, created_at, updated_at
        FROM users WHERE id = ?`,
       [req.params.id]
     );
@@ -71,6 +73,34 @@ router.get('/users/:id', async (req, res) => {
     res.json({ user: rows[0] });
   } catch (err) {
     console.error('Admin user detail error:', err);
+    res.status(500).json({ errors: ['Internal server error'] });
+  }
+});
+
+// PUT /api/admin/users/:id/confirm-payment
+router.put('/users/:id/confirm-payment', async (req, res) => {
+  try {
+    await pool.query(
+      "UPDATE users SET registration_status = 'registered', payment_status = 'paid' WHERE id = ?",
+      [req.params.id]
+    );
+    res.json({ message: 'Payment confirmed' });
+  } catch (err) {
+    console.error('Confirm payment error:', err);
+    res.status(500).json({ errors: ['Internal server error'] });
+  }
+});
+
+// PUT /api/admin/users/:id/reject-payment
+router.put('/users/:id/reject-payment', async (req, res) => {
+  try {
+    await pool.query(
+      "UPDATE users SET registration_status = 'rejected' WHERE id = ?",
+      [req.params.id]
+    );
+    res.json({ message: 'Payment rejected' });
+  } catch (err) {
+    console.error('Reject payment error:', err);
     res.status(500).json({ errors: ['Internal server error'] });
   }
 });

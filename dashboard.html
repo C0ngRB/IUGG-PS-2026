@@ -14,8 +14,8 @@
 
 <div class="dash-content" id="dashContent" style="display:none;">
   <div class="dash-cards dash-cards-3">
-    <div class="dash-card" id="regCard"></div>
-    <div class="dash-card" id="payCard"></div>
+    <div class="dash-card" id="statusCard"></div>
+    <div class="dash-card" id="regDetailCard"></div>
     <div class="dash-card" id="profileCard"></div>
   </div>
 </div>
@@ -28,6 +28,8 @@
   if (!Auth.requireAuth()) return;
 
   var user = Auth.getUser();
+  var typeLabel = { student: 'Student', regular: 'Regular Participant', accompanying: 'Accompanying Person' };
+  var feeMap = { student: '1,000', regular: '2,000', accompanying: '800' };
 
   function render() {
     document.getElementById('loading').style.display = 'none';
@@ -37,35 +39,36 @@
       '&#128100; ' + user.full_name + ' (' + user.email + ') ' +
       '<button class="btn-outline-sm" onclick="Auth.logout()">Log Out</button>';
 
-    var regCard = document.getElementById('regCard');
-    regCard.innerHTML =
+    var regId = 'IUGG2026-' + String(user.id).padStart(4, '0');
+    var regStatus = user.registration_status || 'pending_payment';
+    var statusMap = {
+      pending_payment:    { cls: 'status-pending', text: 'Pending Payment' },
+      pending_verification: { cls: 'status-pending', text: 'Awaiting Verification' },
+      registered:           { cls: 'status-ok',      text: 'Registered' },
+      rejected:             { cls: 'status-pending', text: 'Rejected' },
+    };
+    var st = statusMap[regStatus] || statusMap.pending_payment;
+
+    var statusCard = document.getElementById('statusCard');
+    statusCard.innerHTML =
       '<h3>Registration Status</h3>' +
-      '<span class="status-pill status-ok">Registered</span>' +
-      '<div class="dash-info">' +
-      '<strong>Type:</strong> ' + typeLabel[user.participant_type] +
-      ' &nbsp;|&nbsp; <strong>Oral:</strong> ' + (user.oral_presentation ? 'Yes' : 'No') + '<br>' +
-      '<strong>Registered:</strong> ' + (user.created_at ? user.created_at.substring(0, 10) : 'N/A') +
+      '<span class="status-pill ' + st.cls + '">' + st.text + '</span>' +
+      '<div class="dash-info" style="margin-top:10px;">' +
+      '<strong>Registration ID:</strong> ' + regId + '<br>' +
+      (regStatus === 'pending_payment'
+        ? '<div class="dash-action"><a href="payment.html">→ Go to Payment</a></div>'
+        : '') +
       '</div>';
 
-    var typeLabel = { student: 'Student', regular: 'Regular Participant', accompanying: 'Accompanying Person' };
-    var feeMap = { student: '1,000', regular: '2,000', accompanying: '800' };
-    var payCard = document.getElementById('payCard');
-    if (user.role === 'admin') {
-      payCard.innerHTML =
-        '<h3>Payment Status</h3>' +
-        '<span class="status-pill status-ok">N/A</span>' +
-        '<div class="dash-info"><strong>Administrators do not require payment.</strong></div>';
-    } else {
-    payCard.innerHTML =
-      '<h3>Payment Status</h3>' +
-      '<span class="status-pill ' + payStatus + '">' + payText + '</span>' +
+    var regDetailCard = document.getElementById('regDetailCard');
+    regDetailCard.innerHTML =
+      '<h3>Registration Details</h3>' +
       '<div class="dash-info">' +
-      '<strong>Fee:</strong> ¥' + feeMap[user.participant_type] + ' CNY &nbsp;|&nbsp; <strong>Deadline:</strong> 1 Aug 2026' +
-      '</div>' +
-      (user.payment_status !== 'paid'
-        ? '<div class="dash-action"><a href="payment.html">→ Complete Payment</a></div>'
-        : '');
-    }
+      '<strong>Type:</strong> ' + typeLabel[user.participant_type] + '<br>' +
+      '<strong>Oral:</strong> ' + (user.oral_presentation ? 'Yes' : 'No') + '<br>' +
+      '<strong>Fee:</strong> ¥' + feeMap[user.participant_type] + ' CNY<br>' +
+      '<strong>Registered:</strong> ' + (user.created_at ? user.created_at.substring(0, 10) : 'N/A') +
+      '</div>';
 
     var profileCard = document.getElementById('profileCard');
     profileCard.innerHTML =
@@ -81,8 +84,6 @@
       '<div class="dash-action"><a href="change-password.html">→ Change Password</a></div>' +
       '</div>';
   }
-
-  window.showChangePassword = function () {};  // removed, using dedicated page now
 
   Auth.fetchMe().then(function (u) {
     user = u;
