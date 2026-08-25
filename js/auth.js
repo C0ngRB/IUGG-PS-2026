@@ -1,6 +1,13 @@
-var API_BASE = 'https://api.iugg-ps2026.com/api';
+var API_BASE = 'http://localhost:3000/api';
 
 var Auth = {
+  escapeHtml: function (str) {
+    if (!str) return '';
+    var div = document.createElement('div');
+    div.appendChild(document.createTextNode(str));
+    return div.innerHTML;
+  },
+
   getToken: function () {
     return localStorage.getItem('token');
   },
