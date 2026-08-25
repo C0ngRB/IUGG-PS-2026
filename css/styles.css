@@ -1161,32 +1161,6 @@ a:hover {
     margin-top: 24px;
 }
 
-.qr-register {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin: 16px 0;
-}
-
-.qr-register img {
-    width: 64px;
-    height: 64px;
-    border-radius: 4px;
-    flex-shrink: 0;
-}
-
-.qr-register-text strong {
-    font-size: 15px;
-    color: #12212f;
-    display: block;
-}
-
-.qr-register-text span {
-    font-size: 12px;
-    color: #6b7685;
-    display: block;
-}
-
 /* Buttons */
 .btn-gold {
     display: inline-block;
