@@ -1,4 +1,4 @@
-var API_BASE = 'http://localhost:3000/api';
+var API_BASE = 'https://api.iugg-ps2026.com/api';
 
 var Auth = {
   escapeHtml: function (str) {
