@@ -198,6 +198,30 @@ router.put('/payment-submit', authenticate, async (req, res) => {
   }
 });
 
+// PUT /api/auth/offline-payment
+router.put('/offline-payment', authenticate, async (req, res) => {
+  try {
+    const [rows] = await pool.query('SELECT id, registration_status FROM users WHERE id = ?', [req.user.id]);
+    if (rows.length === 0) {
+      return res.status(404).json({ errors: ['User not found'] });
+    }
+    if (rows[0].registration_status !== 'pending_payment') {
+      return res.status(400).json({ errors: ['Registration already processed'] });
+    }
+
+    await pool.query(
+      "UPDATE users SET registration_status = 'registered', transaction_id = 'offline' WHERE id = ?",
+      [req.user.id]
+    );
+
+    const [updated] = await pool.query('SELECT * FROM users WHERE id = ?', [req.user.id]);
+    res.json({ user: sanitizeUser(updated[0]) });
+  } catch (err) {
+    console.error('Offline payment error:', err);
+    res.status(500).json({ errors: ['Internal server error'] });
+  }
+});
+
 // PUT /api/auth/password
 router.put('/password', authenticate, async (req, res) => {
   try {

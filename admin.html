@@ -114,7 +114,7 @@
         '<td>' + u.email + '</td>' +
         '<td>' + typeLabel + '</td>' +
         '<td>' + regStatus + '</td>' +
-        '<td style="font-size:11px;">' + (u.transaction_id || '—') + '</td>' +
+        '<td style="font-size:11px;">' + (u.transaction_id === 'offline' ? 'On-site' : Auth.escapeHtml(u.transaction_id || '—')) + '</td>' +
         '<td>' + created + '</td>' +
         '<td>' + actionBtn + '</td>' +
         '</tr>';

@@ -47,10 +47,11 @@
 
     var regId = 'IUGG2026-' + String(user.id).padStart(4, '0');
     var regStatus = user.registration_status || 'pending_payment';
+    var isOffline = user.transaction_id === 'offline';
     var statusMap = {
       pending_payment:    { cls: 'status-pending', text: 'Pending Payment' },
       pending_verification: { cls: 'status-pending', text: 'Awaiting Verification' },
-      registered:           { cls: 'status-ok',      text: 'Registered' },
+      registered:           { cls: 'status-ok',      text: isOffline ? 'Registered — On-site Payment' : 'Registered' },
       rejected:             { cls: 'status-pending', text: 'Rejected' },
     };
     var st = statusMap[regStatus] || statusMap.pending_payment;

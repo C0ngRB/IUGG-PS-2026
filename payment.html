@@ -56,6 +56,10 @@
         </div>
         <button class="btn-gold" style="width:100%" id="submitBtn" onclick="submitPayment()">Submit Payment Confirmation</button>
         <div class="form-errors" id="submitErrors" style="margin-top:10px;"></div>
+
+        <div style="text-align:center;margin:16px 0 8px;color:#9ca3af;font-size:12px;">— or —</div>
+        <button type="button" class="btn-outline-sm" style="width:100%;color:#0b2341;border-color:#0b2341;padding:10px;" id="offlineBtn" onclick="chooseOffline()">Pay Offline (On-site Payment)</button>
+        <div class="form-hint" style="text-align:center;margin-top:6px;">Pay in person at the conference venue</div>
       </div>
 
       <div id="submittedMsg" style="display:none;padding:16px;background:#f0fdf4;border-radius:8px;border:1px solid #86efac;text-align:center;">
@@ -143,6 +147,27 @@
     }
     btn.disabled = false;
     btn.textContent = 'Submit Payment Confirmation';
+  };
+  window.chooseOffline = async function () {
+    if (!confirm('Choose offline payment (on-site at the conference)?\n\nYour registration will be marked as successful immediately. You will pay in person at the venue.')) return;
+    if (!confirm('FINAL confirmation: register as on-site payment?')) return;
+
+    var btn = document.getElementById('offlineBtn');
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
+
+    try {
+      await Auth.request('PUT', '/auth/offline-payment', {});
+      document.getElementById('submitSection').style.display = 'none';
+      var msg = document.getElementById('submittedMsg');
+      msg.style.display = '';
+      msg.innerHTML = '<p style="color:#065f46;margin:0;font-size:15px;font-weight:600;">Registered — On-site Payment</p>' +
+        '<p style="font-size:12px;color:#6b7685;margin:8px 0 0 0;">Please pay at the conference registration desk.</p>';
+    } catch (err) {
+      alert(err.errors ? err.errors.join('\n') : 'Failed');
+    }
+    btn.disabled = false;
+    btn.textContent = 'Pay Offline (On-site Payment)';
   };
 })();
 </script>
