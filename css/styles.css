@@ -1184,6 +1184,7 @@ a:hover {
 .qr-register-text span {
     font-size: 12px;
     color: #6b7685;
+    display: block;
 }
 
 /* Buttons */
